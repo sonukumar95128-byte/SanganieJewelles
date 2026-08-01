@@ -64,7 +64,7 @@ export default function CartPage() {
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8">
       <div className="flex items-baseline justify-between mb-6">
         <h1 className="font-heading italic text-3xl text-brand">Your Bag</h1>
-        <span className="text-sm text-ink/50">({items.length} items)</span>
+        <span className="text-sm text-ink/50">({items.length} item{items.length === 1 ? "" : "s"})</span>
       </div>
 
       {items.length === 0 ? (

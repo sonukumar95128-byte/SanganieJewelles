@@ -17,7 +17,7 @@ function getYoutubeId(url: string): string | null {
 }
 
 export default function AdminReelsPage() {
-  const { reels, addReel, updateReel, toggleReel, deleteReel } = useAdmin();
+  const { reels, products, addReel, updateReel, toggleReel, deleteReel } = useAdmin();
   const [uploading, setUploading] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -169,6 +169,20 @@ export default function AdminReelsPage() {
                   ✕
                 </button>
               </div>
+
+              {/* Shoppable product tag — shows a "Product name →" caption on the homepage reel */}
+              <select
+                value={reel.productSlug ?? ""}
+                onChange={(e) => updateReel(reel.id, { productSlug: e.target.value || undefined })}
+                className="w-full rounded-lg border border-beige px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-gold"
+              >
+                <option value="">No linked product (Watch & Shop)</option>
+                {products.map((p) => (
+                  <option key={p.slug} value={p.slug}>
+                    {p.name} — {p.price}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         ))}

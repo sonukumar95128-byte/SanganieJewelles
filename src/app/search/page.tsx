@@ -5,6 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/ProductCard";
 import { categoryToSlug, dummyProducts } from "@/lib/dummy-images";
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -12,11 +16,14 @@ function SearchContent() {
   const [query, setQuery] = useState(initialQuery);
 
   const q = initialQuery.trim().toLowerCase();
+  // Word-boundary match on name/category so "ring" doesn't also pull in "Earrings"
+  // (a plain substring match would, since "Earrings" contains "ring").
+  const wordMatch = q ? new RegExp(`\\b${escapeRegExp(q)}s?\\b`, "i") : null;
   const results = q
     ? dummyProducts.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
+          wordMatch!.test(p.name) ||
+          wordMatch!.test(p.category) ||
           p.sku?.toLowerCase().includes(q)
       )
     : [];
