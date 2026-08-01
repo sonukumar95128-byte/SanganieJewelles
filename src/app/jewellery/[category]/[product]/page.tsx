@@ -31,9 +31,9 @@ export async function generateMetadata({
   const { product: productSlug } = await params;
   const product = getProductBySlug(productSlug);
 
-  if (!product) return { title: "Product not found — Lakshiraah" };
+  if (!product) return { title: "Product not found — Sanganie Jewells" };
 
-  const title = `${product.name} | Lakshiraah`;
+  const title = `${product.name} | Sanganie Jewells`;
   const description = product.description.slice(0, 155);
 
   return {

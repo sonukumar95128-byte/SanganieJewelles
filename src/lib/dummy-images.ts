@@ -67,6 +67,7 @@ export type DummyTestimonial = {
   text: string;
   avatar: string;
   verified: boolean;
+  productSlug?: string;
 };
 
 export const dummyTestimonials: DummyTestimonial[] = [
@@ -76,6 +77,7 @@ export const dummyTestimonials: DummyTestimonial[] = [
     text: "The ring exceeded my expectations — the craftsmanship is stunning and it arrived beautifully packaged. Customer service was wonderful throughout.",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop",
     verified: true,
+    productSlug: "rose-gold-diamond-ring-alr00390",
   },
   {
     name: "Priya Nair",
@@ -83,6 +85,7 @@ export const dummyTestimonials: DummyTestimonial[] = [
     text: "Gorgeous earrings, exactly like the pictures. Delivery was quick and the 15-day return policy gave me peace of mind.",
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop",
     verified: true,
+    productSlug: "rose-gold-diamond-earrings-aps00217e",
   },
   {
     name: "Kavya Reddy",
@@ -90,6 +93,7 @@ export const dummyTestimonials: DummyTestimonial[] = [
     text: "Bought this necklace for my anniversary and it's even more beautiful in person. The hallmark certification made me trust the purchase completely.",
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop",
     verified: true,
+    productSlug: "yellow-gold-diamond-necklace-ams00143",
   },
 ];
 
@@ -103,6 +107,36 @@ export function categoryToSlug(category: string): string {
 export function slugToCategory(slug: string): Category | undefined {
   return categories.find((c) => categoryToSlug(c) === slug);
 }
+
+// "Shop by Price" homepage bands — tuned to the real catalog's price spread (₹6.5k–₹67k).
+export type PriceBand = {
+  label: string;
+  minPrice: number;
+  maxPrice?: number;
+  image: string;
+};
+
+export const priceBands: PriceBand[] = [
+  { label: "Under ₹15,000", minPrice: 0, maxPrice: 15000, image: categoryImages["Nose Pins"] },
+  { label: "₹15,000 – ₹25,000", minPrice: 15000, maxPrice: 25000, image: categoryImages.Earrings },
+  { label: "₹25,000 – ₹40,000", minPrice: 25000, maxPrice: 40000, image: categoryImages.Necklaces },
+  { label: "Above ₹40,000", minPrice: 40000, image: categoryImages.Pendants },
+];
+
+// "Shop by Relation" homepage cards — links reuse the existing /jewellery?category=slug1,slug2 filter.
+export type RelationShop = {
+  label: string;
+  categories: Category[];
+  image: string;
+};
+
+export const relationShops: RelationShop[] = [
+  { label: "Mother", categories: ["Necklaces", "Pendants"], image: categoryImages.Necklaces },
+  { label: "Sister", categories: ["Earrings", "Bracelets"], image: categoryImages.Earrings },
+  { label: "Wife", categories: ["Rings", "Necklaces"], image: categoryImages.Rings },
+  { label: "Friend", categories: ["Pendants", "Earrings"], image: categoryImages.Pendants },
+  { label: "Daughter", categories: ["Nose Pins", "Rings"], image: categoryImages["Nose Pins"] },
+];
 
 export type DummyProduct = {
   sku?: string;

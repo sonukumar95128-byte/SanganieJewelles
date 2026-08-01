@@ -95,11 +95,11 @@ export function Header() {
       <div className="mx-auto max-w-7xl grid grid-cols-[auto_1fr_auto] items-center gap-6 px-4 sm:px-6 py-3">
         <Link href="/" className="shrink-0">
           <Image
-            src="/brand/lakshiraah-logo.png"
-            alt="Lakshiraah — Luxurious Concepts"
+            src="/brand/sanganie-jewells-logo.svg"
+            alt="Sanganie Jewells"
             width={160}
-            height={44}
-            className="h-10 w-auto object-contain"
+            height={160}
+            className="h-10 w-10 object-contain"
             priority
           />
         </Link>

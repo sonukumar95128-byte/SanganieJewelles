@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --color-brand: #2a1414; /* Deep Burgundy */
-  --color-brand-secondary: #4a2b25; /* Warm Brown */
-  --color-gold: #d4a24c; /* Royal Gold */
+  --color-brand: #123c30; /* Deep Forest Green */
+  --color-brand-secondary: #1e5744; /* Lighter Green */
+  --color-gold: #c9a227; /* Rich Gold */
   --color-gold-light: #f2d18a; /* Champagne Gold */
-  --color-ivory: #f8f4ee; /* Warm Ivory */
-  --color-beige: #efe7dd; /* Champagne Beige */
-  --color-ink: #2b2b2b; /* Charcoal */
+  --color-ivory: #fafaf7; /* Near White */
+  --color-beige: #eceae4; /* Light Neutral */
+  --color-ink: #1a1a1a; /* Near Black */
 
   --background: var(--color-ivory);
   --foreground: var(--color-ink);
@@ -37,8 +37,8 @@ body {
   background-color: var(--color-beige);
   background-image: repeating-linear-gradient(
     45deg,
-    rgba(212, 162, 76, 0.18) 0px,
-    rgba(212, 162, 76, 0.18) 2px,
+    rgba(201, 162, 39, 0.18) 0px,
+    rgba(201, 162, 39, 0.18) 2px,
     transparent 2px,
     transparent 10px
   );

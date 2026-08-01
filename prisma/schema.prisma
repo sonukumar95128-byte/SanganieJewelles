@@ -1,4 +1,4 @@
-// Prisma schema for Lakshiraah jewellery ecommerce store
+// Prisma schema for Sanganie Jewells jewellery ecommerce store
 // Docs: https://pris.ly/d/prisma-schema
 
 generator client {

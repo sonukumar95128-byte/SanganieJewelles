@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, useCallback } from "react";
-import type { AdminReel } from "@/lib/admin-store";
+import { useAdmin, type AdminReel } from "@/lib/admin-store";
+import { categoryToSlug } from "@/lib/dummy-images";
 
 function getYoutubeId(url: string): string | null {
   const patterns = [
@@ -91,6 +93,7 @@ function ReelItem({
 }
 
 export function ReelsSection({ reels }: { reels: AdminReel[] }) {
+  const { products } = useAdmin();
   const activeReels = reels.filter((r) => r.enabled);
   const [activeIdx, setActiveIdx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -181,11 +184,24 @@ export function ReelsSection({ reels }: { reels: AdminReel[] }) {
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
-              {reel.title && isCenter && (
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p className="text-white text-sm font-medium drop-shadow line-clamp-2">{reel.title}</p>
-                </div>
-              )}
+              {isCenter && (() => {
+                const taggedProduct = reel.productSlug ? products.find((p) => p.slug === reel.productSlug) : undefined;
+                return (
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    {taggedProduct ? (
+                      <Link
+                        href={`/jewellery/${categoryToSlug(taggedProduct.category)}/${taggedProduct.slug}`}
+                        className="flex items-center gap-1.5 text-white text-sm font-medium drop-shadow hover:text-gold-light transition-colors"
+                      >
+                        <span className="line-clamp-1">{taggedProduct.name}</span>
+                        <span className="shrink-0">→</span>
+                      </Link>
+                    ) : (
+                      reel.title && <p className="text-white text-sm font-medium drop-shadow line-clamp-2">{reel.title}</p>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           );
         })}

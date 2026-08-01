@@ -45,6 +45,14 @@ export default function AdminCollectionsPage() {
               className="w-full mb-2 rounded-lg border border-beige px-3 py-1.5 text-sm font-medium text-brand focus:outline-none focus:ring-1 focus:ring-gold"
             />
 
+            <textarea
+              value={c.description ?? ""}
+              onChange={(e) => updateCollection(c.id, { description: e.target.value })}
+              placeholder="Short description shown under the title on the homepage…"
+              rows={2}
+              className="w-full mb-2 rounded-lg border border-beige px-3 py-1.5 text-xs text-ink/70 focus:outline-none focus:ring-1 focus:ring-gold resize-none"
+            />
+
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-ink/50">{c.productSlugs.length} products</span>
               <Link

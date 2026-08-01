@@ -1,6 +1,6 @@
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Shipping & Returns — Lakshiraah" };
+export const metadata = { title: "Shipping & Returns — Sanganie Jewells" };
 
 export default function ShippingReturnsPage() {
   return (

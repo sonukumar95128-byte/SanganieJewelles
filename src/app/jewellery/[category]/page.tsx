@@ -18,11 +18,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { category: slug } = await params;
   const category = slugToCategory(slug);
-  if (!category) return { title: "Not found — Lakshiraah" };
+  if (!category) return { title: "Not found — Sanganie Jewells" };
 
   return {
-    title: `${category} | Lakshiraah`,
-    description: `Shop fine ${category.toLowerCase()} — hallmarked gold and certified diamonds, handcrafted by Lakshiraah.`,
+    title: `${category} | Sanganie Jewells`,
+    description: `Shop fine ${category.toLowerCase()} — hallmarked gold and certified diamonds, handcrafted by Sanganie Jewells.`,
   };
 }
 

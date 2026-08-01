@@ -1,0 +1,10 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sanganie Jewells">
+  <rect x="0" y="0" width="200" height="200" rx="26" fill="#123C30" />
+  <circle cx="100" cy="97" r="72" fill="none" stroke="#C9A227" stroke-width="2.5" />
+  <text x="100" y="90" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="27" letter-spacing="2" fill="#E8C874">SANGANIE</text>
+  <line x1="62" y1="104" x2="138" y2="104" stroke="#C9A227" stroke-width="1" />
+  <text x="100" y="126" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="600" font-size="18" letter-spacing="6" fill="#E8C874">JEWELLS</text>
+  <g transform="translate(168,97)">
+    <path d="M0 -13 L3.2 -3.2 L13 0 L3.2 3.2 L0 13 L-3.2 3.2 L-13 0 L-3.2 -3.2 Z" fill="#C9A227" />
+  </g>
+</svg>

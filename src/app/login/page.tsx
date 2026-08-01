@@ -35,7 +35,7 @@ export default function LoginPage() {
         {/* Logo / Brand */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <p className="font-heading italic text-3xl text-brand">Lakshiraah</p>
+            <p className="font-heading italic text-3xl text-brand">Sanganie Jewells</p>
             <p className="text-xs text-ink/40 tracking-widest uppercase mt-0.5">Luxurious Concepts</p>
           </Link>
         </div>

@@ -223,7 +223,7 @@ export function ProductPurchasePanel({
       {/* WhatsApp Buy Now */}
       {process.env.NEXT_PUBLIC_WHATSAPP_BUSINESS_NUMBER && (
         <a
-          href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_BUSINESS_NUMBER}?text=${encodeURIComponent(`Hi Lakshiraah, I'm interested in buying:\n\n*${name}*\nPrice: ${price}\n\nPlease help me with this order.`)}`}
+          href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_BUSINESS_NUMBER}?text=${encodeURIComponent(`Hi Sanganie Jewells, I'm interested in buying:\n\n*${name}*\nPrice: ${price}\n\nPlease help me with this order.`)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-medium text-white hover:bg-[#1ebe5d] transition-colors"

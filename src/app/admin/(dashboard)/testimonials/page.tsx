@@ -26,7 +26,7 @@ function Avatar({ src, name }: { src: string; name: string }) {
 }
 
 export default function AdminTestimonialsPage() {
-  const { testimonials, setTestimonialStatus, toggleTestimonialFeatured, addTestimonial, deleteTestimonial } =
+  const { testimonials, products, setTestimonialStatus, toggleTestimonialFeatured, addTestimonial, updateTestimonial, deleteTestimonial } =
     useAdmin();
   const [filter, setFilter] = useState<"all" | TestimonialStatus>("all");
   const [showForm, setShowForm] = useState(false);
@@ -159,6 +159,22 @@ export default function AdminTestimonialsPage() {
                 )}
               </div>
               <p className="mt-1 text-sm text-ink/70">{t.text}</p>
+
+              <div className="mt-2">
+                <label className="text-xs text-ink/50 mr-2">Tagged product:</label>
+                <select
+                  value={t.productSlug ?? ""}
+                  onChange={(e) => updateTestimonial(t.id, { productSlug: e.target.value || undefined })}
+                  className="rounded-lg border border-beige px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-gold max-w-full"
+                >
+                  <option value="">None</option>
+                  {products.map((p) => (
+                    <option key={p.slug} value={p.slug}>
+                      {p.name} — {p.price}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div className="mt-2 flex items-center gap-3 text-xs">
                 {t.status !== "approved" && (

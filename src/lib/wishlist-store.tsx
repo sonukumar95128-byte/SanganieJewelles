@@ -12,7 +12,7 @@ type WishlistContextValue = {
 
 const WishlistContext = createContext<WishlistContextValue | null>(null);
 
-const STORAGE_KEY = "lakshiraah-wishlist";
+const STORAGE_KEY = "sanganie-wishlist";
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [slugs, setSlugs] = useState<string[]>([]);

@@ -10,7 +10,7 @@ const helpLinks = [
   { label: "Contact us", href: "/help/contact" },
 ];
 const companyLinks = [
-  { label: "About Lakshiraah", href: "/about" },
+  { label: "About Sanganie Jewells", href: "/about" },
   { label: "Store locator", href: "/store-locator" },
   { label: "Privacy policy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
@@ -56,11 +56,11 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div>
           <Image
-            src="/brand/lakshiraah-logo.png"
-            alt="Lakshiraah"
+            src="/brand/sanganie-jewells-logo.svg"
+            alt="Sanganie Jewells"
             width={220}
-            height={60}
-            className="h-16 w-auto object-contain mb-3"
+            height={220}
+            className="h-16 w-16 object-contain mb-3"
           />
           <p className="text-xs text-gold-light/60 leading-relaxed">
             Luxurious concepts in fine jewellery — handcrafted, hallmarked, and certified.
@@ -122,7 +122,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-gold-light/15 px-4 sm:px-6 py-4 text-center text-xs text-gold-light/50">
-        © {new Date().getFullYear()} Lakshiraah. All rights reserved.
+        © {new Date().getFullYear()} Sanganie Jewells. All rights reserved.
       </div>
     </footer>
   );

@@ -52,6 +52,7 @@ export type AdminTestimonial = {
   avatar: string;
   status: TestimonialStatus;
   featured: boolean;
+  productSlug?: string;
 };
 
 export type ProductReview = {
@@ -69,6 +70,7 @@ export type AdminCollection = {
   title: string;
   slug: string;
   image: string;
+  description?: string;
   productSlugs: string[];
   enabled: boolean;
 };
@@ -92,6 +94,7 @@ export type AdminReel = {
   thumbnail?: string;
   enabled: boolean;
   format: "portrait" | "landscape"; // portrait = 9:16, landscape = 16:9
+  productSlug?: string; // links the reel to a shoppable product ("Watch & Shop")
 };
 
 export type TrustBadge = {
@@ -130,31 +133,31 @@ export type SiteSettings = {
 
 // v3: bumped after setting all stock to 50 (was 1 each from the CSV).
 // Changing this key invalidates any stale browser cache from before that change.
-const PRODUCTS_KEY = "lakshiraah-admin-products-v4";
+const PRODUCTS_KEY = "sanganie-admin-products-v4";
 // v2: bumped after removing the 5 sample/dummy orders.
-const ORDERS_KEY = "lakshiraah-admin-orders-v2";
+const ORDERS_KEY = "sanganie-admin-orders-v2";
 // v2: bumped after adding manageHref links to sections.
-const HOMEPAGE_KEY = "lakshiraah-admin-homepage-v3";
+const HOMEPAGE_KEY = "sanganie-admin-homepage-v3";
 // v2: bumped after adding promo slider strips + enabled field.
-const BANNERS_KEY = "lakshiraah-admin-banners-v2";
-const TESTIMONIALS_KEY = "lakshiraah-admin-testimonials";
+const BANNERS_KEY = "sanganie-admin-banners-v2";
+const TESTIMONIALS_KEY = "sanganie-admin-testimonials";
 // v2: productCount replaced with real productSlugs[] for collection-to-product linking.
-const COLLECTIONS_KEY = "lakshiraah-admin-collections-v2";
-const COUPONS_KEY = "lakshiraah-admin-coupons";
-const SETTINGS_KEY = "lakshiraah-admin-settings";
-const PRODUCT_REVIEWS_KEY = "lakshiraah-product-reviews";
-const NEW_ARRIVALS_KEY = "lakshiraah-admin-new-arrivals";
-const BEST_SELLERS_KEY = "lakshiraah-admin-best-sellers";
-const CATEGORY_IMAGES_KEY = "lakshiraah-admin-category-images";
-const PAGE_BANNERS_KEY = "lakshiraah-admin-page-banners";
-const REELS_KEY = "lakshiraah-admin-reels";
-const TRUST_BADGES_KEY = "lakshiraah-trust-badges";
+const COLLECTIONS_KEY = "sanganie-admin-collections-v2";
+const COUPONS_KEY = "sanganie-admin-coupons";
+const SETTINGS_KEY = "sanganie-admin-settings";
+const PRODUCT_REVIEWS_KEY = "sanganie-product-reviews";
+const NEW_ARRIVALS_KEY = "sanganie-admin-new-arrivals";
+const BEST_SELLERS_KEY = "sanganie-admin-best-sellers";
+const CATEGORY_IMAGES_KEY = "sanganie-admin-category-images";
+const PAGE_BANNERS_KEY = "sanganie-admin-page-banners";
+const REELS_KEY = "sanganie-admin-reels";
+const TRUST_BADGES_KEY = "sanganie-trust-badges";
 
 const seedTrustBadges: TrustBadge[] = [
-  { id: "badge-1", icon: "✓", label: "Hallmarked", sub: "BIS certified", enabled: true },
-  { id: "badge-2", icon: "🚚", label: "Free shipping", sub: "Over ₹999", enabled: true },
-  { id: "badge-3", icon: "↺", label: "15-day returns", sub: "Easy & free", enabled: true },
-  { id: "badge-4", icon: "♾", label: "Lifetime exchange", sub: "Buyback support", enabled: true },
+  { id: "badge-1", icon: "✓", label: "Certified Authenticity", sub: "Every piece verified", enabled: true },
+  { id: "badge-2", icon: "🔒", label: "Secure Shopping Experience", sub: "Safe & encrypted checkout", enabled: true },
+  { id: "badge-3", icon: "◆", label: "BIS Hallmarked", sub: "Government certified", enabled: true },
+  { id: "badge-4", icon: "♾", label: "Lifetime Buyback", sub: "Exchange support, always", enabled: true },
 ];
 
 const seedProducts: AdminProduct[] = dummyProducts;
@@ -163,12 +166,14 @@ const seedHomepageSections: HomepageSection[] = [
   { id: "hero", label: "Hero slider", meta: "3 active slides", manageLabel: "Manage slides →", manageHref: "/admin/banners", enabled: true },
   { id: "categories", label: "Category circles", meta: "auto from categories", manageLabel: "Pick categories →", enabled: true },
   { id: "best-sellers", label: "Best Sellers", meta: "8 products shown", manageLabel: "Choose products →", manageHref: "/admin/homepage/best-sellers", enabled: true },
-  { id: "offer-banner", label: "Offer banner", meta: "links to /offers", manageLabel: "Edit banner & link →", manageHref: "/admin/banners", enabled: true },
+  { id: "shop-by-price", label: "Shop by Price", meta: "4 price bands", manageLabel: "", enabled: true },
   { id: "new-arrivals", label: "New Arrivals", meta: "8 products shown", manageLabel: "Choose products →", manageHref: "/admin/homepage/new-arrivals", enabled: true },
-  { id: "reels", label: "Video Reels", meta: "Short videos", manageLabel: "Manage reels →", manageHref: "/admin/reels", enabled: true },
-  { id: "collections", label: "Shop by collection", meta: "3 collections", manageLabel: "Choose collections →", manageHref: "/admin/collections", enabled: true },
-  { id: "testimonials", label: "Testimonials", meta: "3 approved", manageLabel: "Manage testimonials →", manageHref: "/admin/testimonials", enabled: true },
-  { id: "trust-badges", label: "Trust badges", meta: "4 badges", manageLabel: "Edit badges →", manageHref: "/admin/trust-badges", enabled: true },
+  { id: "shop-by-relation", label: "Shop by Relation", meta: "5 relations", manageLabel: "", enabled: true },
+  { id: "offer-banner", label: "Offer banner", meta: "links to /offers", manageLabel: "Edit banner & link →", manageHref: "/admin/banners", enabled: true },
+  { id: "collections", label: "Trending Now", meta: "3 collections", manageLabel: "Choose collections →", manageHref: "/admin/collections", enabled: true },
+  { id: "reels", label: "Watch & Shop", meta: "Short videos", manageLabel: "Manage reels →", manageHref: "/admin/reels", enabled: true },
+  { id: "testimonials", label: "Customer Stories", meta: "3 approved", manageLabel: "Manage testimonials →", manageHref: "/admin/testimonials", enabled: true },
+  { id: "trust-badges", label: "Our Promise", meta: "4 badges", manageLabel: "Edit badges →", manageHref: "/admin/trust-badges", enabled: true },
 ];
 
 const seedHeroSlides: HeroSlideAdmin[] = heroSlides.map((s, i) => ({
@@ -204,6 +209,7 @@ const seedTestimonials: AdminTestimonial[] = dummyTestimonials.map((t, i) => ({
   avatar: t.avatar,
   status: "approved",
   featured: i === 0,
+  productSlug: t.productSlug,
 }));
 
 const seedCollections: AdminCollection[] = [
@@ -212,6 +218,7 @@ const seedCollections: AdminCollection[] = [
     title: "Bridal",
     slug: "bridal",
     image: collectionImages.Bridal,
+    description: "Statement pieces for the big day and every celebration after it.",
     productSlugs: dummyProducts.slice(0, 8).map((p) => p.slug),
     enabled: true,
   },
@@ -220,6 +227,7 @@ const seedCollections: AdminCollection[] = [
     title: "Everyday Light",
     slug: "everyday-light",
     image: collectionImages["Everyday Light"],
+    description: "Lightweight, wearable gold for the pieces you'll never want to take off.",
     productSlugs: dummyProducts.slice(8, 16).map((p) => p.slug),
     enabled: true,
   },
@@ -228,6 +236,7 @@ const seedCollections: AdminCollection[] = [
     title: "Gifting",
     slug: "gifting",
     image: collectionImages.Gifting,
+    description: "Thoughtful, ready-to-gift edits for the people who matter most.",
     productSlugs: dummyProducts.slice(16, 24).map((p) => p.slug),
     enabled: true,
   },
@@ -315,6 +324,7 @@ type AdminContextValue = {
   setTestimonialStatus: (id: string, status: TestimonialStatus) => void;
   toggleTestimonialFeatured: (id: string) => void;
   addTestimonial: (testimonial: Omit<AdminTestimonial, "id">) => void;
+  updateTestimonial: (id: string, updates: Partial<AdminTestimonial>) => void;
   deleteTestimonial: (id: string) => void;
 
   collections: AdminCollection[];
@@ -644,6 +654,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setTestimonials((prev) => [{ ...testimonial, id: `testimonial-${Date.now()}` }, ...prev]);
   };
 
+  const updateTestimonial = (id: string, updates: Partial<AdminTestimonial>) => {
+    setTestimonials((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)));
+  };
+
   const deleteTestimonial = (id: string) => {
     setTestimonials((prev) => prev.filter((t) => t.id !== id));
   };
@@ -773,6 +787,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         setTestimonialStatus,
         toggleTestimonialFeatured,
         addTestimonial,
+        updateTestimonial,
         deleteTestimonial,
         collections,
         addCollection,
