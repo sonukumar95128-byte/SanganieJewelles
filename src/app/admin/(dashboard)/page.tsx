@@ -54,8 +54,8 @@ export default function AdminDashboardPage() {
 
       <div>
         <h2 className="text-sm font-medium text-brand mb-3">Recent orders</h2>
-        <div className="rounded-xl border border-beige bg-white overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="rounded-xl border border-beige bg-white overflow-x-auto">
+          <table className="w-full min-w-[520px] text-sm">
             <thead className="bg-beige/50 text-left text-xs text-ink/50">
               <tr>
                 <th className="px-4 py-2">Order</th>

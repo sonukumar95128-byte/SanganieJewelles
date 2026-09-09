@@ -22,7 +22,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+    <nav className="flex lg:flex-col lg:flex-1 gap-1 px-3 py-2 lg:py-4 overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto [&::-webkit-scrollbar]:hidden">
       {navLinks.map((link) => {
         const active = link.href === "/admin" ? pathname === "/admin" : pathname?.startsWith(link.href);
         return (
@@ -30,7 +30,7 @@ export function AdminNav() {
             key={link.href}
             href={link.href}
             className={
-              "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors " +
+              "flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm transition-colors " +
               (active ? "bg-gold-light/15 text-gold-light font-medium" : "text-gold-light/60 hover:bg-brand-secondary hover:text-gold-light")
             }
           >

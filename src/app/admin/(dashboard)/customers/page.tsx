@@ -49,8 +49,8 @@ export default function AdminCustomersPage() {
         className="mb-4 w-full max-w-xs rounded-lg border border-beige px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gold"
       />
 
-      <div className="rounded-xl border border-beige bg-white overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="rounded-xl border border-beige bg-white overflow-x-auto">
+        <table className="w-full min-w-[560px] text-sm">
           <thead className="bg-beige/50 text-left text-xs text-ink/50">
             <tr>
               <th className="px-4 py-2">Name</th>

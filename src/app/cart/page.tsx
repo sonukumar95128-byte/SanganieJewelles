@@ -136,11 +136,11 @@ export default function CartPage() {
                 value={couponInput}
                 onChange={(e) => setCouponInput(e.target.value)}
                 placeholder="Coupon code"
-                className="flex-1 bg-transparent text-sm placeholder:text-ink/40 focus:outline-none"
+                className="flex-1 bg-transparent py-2 text-sm placeholder:text-ink/40 focus:outline-none"
               />
               <button
                 onClick={applyCoupon}
-                className="rounded-full bg-gold px-4 py-1.5 text-xs font-medium text-brand hover:bg-gold-light transition-colors"
+                className="rounded-full bg-gold px-4 py-2.5 text-xs font-medium text-brand hover:bg-gold-light transition-colors"
               >
                 Apply
               </button>

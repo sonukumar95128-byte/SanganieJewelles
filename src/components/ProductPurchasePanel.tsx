@@ -254,9 +254,10 @@ export function ProductPurchasePanel({
             onChange={(e) => setPincode(e.target.value)}
             placeholder="Enter pincode"
             maxLength={6}
-            className="flex-1 bg-transparent text-sm placeholder:text-ink/40 focus:outline-none"
+            inputMode="numeric"
+            className="flex-1 bg-transparent py-2 text-sm placeholder:text-ink/40 focus:outline-none"
           />
-          <button className="rounded-full bg-brand px-4 py-1.5 text-xs font-medium text-gold-light hover:bg-brand-secondary transition-colors whitespace-nowrap">
+          <button className="rounded-full bg-brand px-4 py-2.5 text-xs font-medium text-gold-light hover:bg-brand-secondary transition-colors whitespace-nowrap">
             Check Delivery
           </button>
         </div>
