@@ -5,18 +5,16 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { categoryToSlug, dummyProducts, formatRupee, priceToNumber } from "@/lib/dummy-images";
 import { useCart } from "@/lib/cart-store";
-
-const VALID_COUPONS: Record<string, number> = {
-  JB50: 0.08,
-  DAZZLING20: 0.05,
-};
+import { useAdmin } from "@/lib/admin-store";
+import { couponErrorMessage, findCoupon, orderTotals, validateCoupon } from "@/lib/order-total";
 
 export default function CartPage() {
-  const { items: cart, addItem, removeItem: removeFromCart, updateQuantity } = useCart();
+  const { items: cart, addItem, removeItem: removeFromCart, updateQuantity, couponCode, setCouponCode } = useCart();
+  const { coupons } = useAdmin();
   const [savedForLater, setSavedForLater] = useState<string[]>([]);
   const [couponInput, setCouponInput] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponError, setCouponError] = useState("");
+  const appliedCoupon = couponCode;
 
   const items = cart
     .map((line) => {
@@ -30,9 +28,10 @@ export default function CartPage() {
     [items]
   );
 
-  const discount = appliedCoupon ? Math.round(subtotal * VALID_COUPONS[appliedCoupon]) : 0;
-  const shipping = subtotal > 0 && subtotal < 999 ? 99 : 0;
-  const total = subtotal - discount + shipping;
+  const activeCoupon = appliedCoupon ? findCoupon(coupons, appliedCoupon) : undefined;
+  const { discount, shipping, total } = orderTotals(subtotal, activeCoupon);
+  // A coupon saved earlier can stop qualifying — e.g. the subtotal drops below its minimum.
+  const appliedCheck = appliedCoupon ? validateCoupon(activeCoupon, subtotal) : null;
 
   const removeItem = (slug: string) => {
     removeFromCart(slug);
@@ -51,12 +50,15 @@ export default function CartPage() {
   const applyCoupon = () => {
     const code = couponInput.trim().toUpperCase();
     if (!code) return;
-    if (VALID_COUPONS[code]) {
-      setAppliedCoupon(code);
+    const match = findCoupon(coupons, code);
+    const check = validateCoupon(match, subtotal);
+    if (check.ok) {
+      setCouponCode(check.coupon.code);
       setCouponError("");
+      setCouponInput("");
     } else {
-      setAppliedCoupon(null);
-      setCouponError("Invalid coupon code");
+      setCouponCode(null);
+      setCouponError(couponErrorMessage(check.reason, match));
     }
   };
 
@@ -146,9 +148,17 @@ export default function CartPage() {
               </button>
             </div>
             {couponError && <p className="text-xs text-red-500">{couponError}</p>}
-            {appliedCoupon && (
-              <p className="text-xs text-gold">
-                Coupon {appliedCoupon} applied — you saved {formatRupee(discount)}
+            {appliedCheck && (
+              <p className={"text-xs " + (appliedCheck.ok ? "text-gold" : "text-red-500")}>
+                {appliedCheck.ok
+                  ? `Coupon ${appliedCoupon} applied — you saved ${formatRupee(discount)}`
+                  : couponErrorMessage(appliedCheck.reason, activeCoupon)}{" "}
+                <button
+                  onClick={() => setCouponCode(null)}
+                  className="ml-1 text-ink/40 underline transition-colors hover:text-red-500"
+                >
+                  Remove
+                </button>
               </p>
             )}
 

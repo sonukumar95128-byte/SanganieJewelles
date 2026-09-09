@@ -11,20 +11,26 @@ type CartContextValue = {
   updateQuantity: (slug: string, delta: number) => void;
   clearCart: () => void;
   itemCount: number;
+  // Persisted so checkout charges the same total the cart quoted.
+  couponCode: string | null;
+  setCouponCode: (code: string | null) => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 
 const STORAGE_KEY = "sanganie-cart";
+const COUPON_KEY = "sanganie-cart-coupon";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartLine[]>([]);
+  const [couponCode, setCouponCode] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) setItems(JSON.parse(raw));
+      setCouponCode(localStorage.getItem(COUPON_KEY));
     } catch {
       // ignore malformed storage
     }
@@ -35,6 +41,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items, hydrated]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (couponCode) localStorage.setItem(COUPON_KEY, couponCode);
+    else localStorage.removeItem(COUPON_KEY);
+  }, [couponCode, hydrated]);
 
   const addItem = (slug: string, quantity = 1) => {
     setItems((prev) => {
@@ -56,11 +68,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => {
+    setItems([]);
+    setCouponCode(null);
+  };
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, itemCount }}>
+    <CartContext.Provider
+      value={{ items, addItem, removeItem, updateQuantity, clearCart, itemCount, couponCode, setCouponCode }}
+    >
       {children}
     </CartContext.Provider>
   );

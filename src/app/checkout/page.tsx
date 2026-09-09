@@ -8,6 +8,7 @@ import { CheckoutStepper } from "@/components/CheckoutStepper";
 import { dummyProducts, formatRupee, priceToNumber } from "@/lib/dummy-images";
 import { useCart } from "@/lib/cart-store";
 import { useAdmin } from "@/lib/admin-store";
+import { findCoupon, orderTotals } from "@/lib/order-total";
 
 const countryCodes = ["+91", "+1", "+44", "+971", "+65"];
 const countries = ["India", "United States", "United Kingdom", "United Arab Emirates", "Singapore"];
@@ -37,8 +38,8 @@ const emptyAddress: Address = {
 };
 
 export default function CheckoutPage() {
-  const { items: cart, clearCart } = useCart();
-  const { settings } = useAdmin();
+  const { items: cart, clearCart, couponCode } = useCart();
+  const { settings, coupons } = useAdmin();
   const [step, setStep] = useState(1);
   const [address, setAddress] = useState<Address>(emptyAddress);
   const [orderId, setOrderId] = useState<string | null>(null);
@@ -59,8 +60,8 @@ export default function CheckoutPage() {
     () => cartItems.reduce((sum, i) => sum + priceToNumber(i.product.price) * i.quantity, 0),
     [cartItems]
   );
-  const discount = cartItems.length > 0 ? 1200 : 0;
-  const total = subtotal - discount;
+  const activeCoupon = couponCode ? findCoupon(coupons, couponCode) : undefined;
+  const { discount, shipping, total } = orderTotals(subtotal, activeCoupon);
 
   const addressValid =
     address.fullName && address.phone && address.line1 && address.city && address.state && address.pincode;
@@ -327,9 +328,15 @@ export default function CheckoutPage() {
               <dt className="text-ink/60">Subtotal</dt>
               <dd className="text-ink/80">{formatRupee(subtotal)}</dd>
             </div>
-            <div className="flex justify-between text-gold">
-              <dt>Discount</dt>
-              <dd>− {formatRupee(discount)}</dd>
+            {discount > 0 && (
+              <div className="flex justify-between text-gold">
+                <dt>Discount{activeCoupon ? ` (${activeCoupon.code})` : ""}</dt>
+                <dd>− {formatRupee(discount)}</dd>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <dt className="text-ink/60">Shipping</dt>
+              <dd className="text-ink/80">{shipping === 0 ? "Free" : formatRupee(shipping)}</dd>
             </div>
             <div className="flex justify-between font-semibold text-brand border-t border-beige pt-2 mt-2">
               <dt>Total</dt>
