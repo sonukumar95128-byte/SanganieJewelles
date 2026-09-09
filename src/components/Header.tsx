@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
@@ -44,6 +44,22 @@ function UserIcon() {
   );
 }
 
+function MenuIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function SearchIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -58,14 +74,18 @@ export function Header() {
   const { count: wishlistCount } = useWishlist();
   const { user, isLoggedIn } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
   const [search, setSearch] = useState("");
   const [hidden, setHidden] = useState(false);
   const [scrolledUp, setScrolledUp] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const lastY = useRef(0);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (search.trim()) router.push(`/search?q=${encodeURIComponent(search.trim())}`);
+    if (!search.trim()) return;
+    router.push(`/search?q=${encodeURIComponent(search.trim())}`);
+    setMenuOpen(false);
   };
 
   useEffect(() => {
@@ -81,9 +101,28 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Tapping a link inside the drawer should leave it closed on the next page.
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   const dark = scrolledUp;
 
   return (
+    <>
     <header
       className={
         "sticky top-0 z-50 transition-all duration-300 " +
@@ -92,17 +131,31 @@ export function Header() {
         (dark ? "bg-brand border-b border-gold-light/15 shadow-md" : "bg-white border-b border-beige")
       }
     >
-      <div className="mx-auto max-w-7xl grid grid-cols-[auto_1fr_auto] items-center gap-6 px-4 sm:px-6 py-3">
-        <Link href="/" className="shrink-0">
-          <Image
-            src="/brand/sanganie-jewells-logo.svg"
-            alt="Sanganie Jewells"
-            width={160}
-            height={160}
-            className="h-10 w-10 object-contain"
-            priority
-          />
-        </Link>
+      <div className="mx-auto max-w-7xl grid grid-cols-[auto_1fr_auto] items-center gap-3 sm:gap-6 px-4 sm:px-6 py-3">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            className={
+              "grid h-10 w-10 shrink-0 place-items-center rounded-full transition-colors md:hidden " +
+              (dark ? "text-gold-light hover:bg-brand-secondary" : "text-ink hover:bg-beige")
+            }
+          >
+            <MenuIcon />
+          </button>
+
+          <Link href="/" className="shrink-0">
+            <Image
+              src="/brand/sanganie-jewells-logo.svg"
+              alt="Sanganie Jewells"
+              width={160}
+              height={160}
+              className="h-10 w-10 object-contain"
+              priority
+            />
+          </Link>
+        </div>
 
         <nav
           className={
@@ -189,5 +242,82 @@ export function Header() {
         </div>
       </div>
     </header>
+
+      {/* Mobile menu — rendered outside <header> so the scroll-hide transform doesn't move it */}
+      {menuOpen && (
+        <div className="md:hidden">
+          <div
+            className="fixed inset-0 z-[60] bg-black/50"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className="fixed inset-y-0 left-0 z-[70] flex w-[82%] max-w-xs flex-col bg-white shadow-xl"
+          >
+            <div className="flex items-center justify-between border-b border-beige px-4 py-3">
+              <Image
+                src="/brand/sanganie-jewells-logo.svg"
+                alt="Sanganie Jewells"
+                width={160}
+                height={160}
+                className="h-9 w-9 object-contain"
+              />
+              <button
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+                className="grid h-10 w-10 place-items-center rounded-full text-ink/70 hover:bg-beige"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <form onSubmit={handleSearchSubmit} className="border-b border-beige p-4">
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/40">
+                  <SearchIcon />
+                </span>
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search jewellery…"
+                  className="w-full rounded-full border border-beige bg-ivory py-2.5 pl-9 pr-4 text-sm text-ink placeholder:text-ink/40 focus:outline-none focus:ring-1 focus:ring-gold"
+                />
+              </div>
+            </form>
+
+            <nav className="flex-1 overflow-y-auto p-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block rounded-lg px-4 py-3 text-sm text-ink/80 transition-colors hover:bg-beige hover:text-brand"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="border-t border-beige p-2">
+              <Link
+                href="/account/wishlist"
+                className="block rounded-lg px-4 py-3 text-sm text-ink/80 transition-colors hover:bg-beige hover:text-brand"
+              >
+                Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ""}
+              </Link>
+              <Link
+                href={isLoggedIn ? "/account" : "/login"}
+                className="block rounded-lg px-4 py-3 text-sm text-ink/80 transition-colors hover:bg-beige hover:text-brand"
+              >
+                {isLoggedIn && user ? `My account — ${user.name}` : "Sign in"}
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
