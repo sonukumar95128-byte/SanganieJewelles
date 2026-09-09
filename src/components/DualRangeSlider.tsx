@@ -1,20 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type DualRangeSliderProps = {
   min: number;
   max: number;
   step?: number;
+  value?: [number, number];
+  /** Fired on release, so dragging doesn't push a URL entry per pixel. */
+  onCommit?: (range: [number, number]) => void;
 };
 
 function formatRupee(n: number) {
   return "₹" + n.toLocaleString("en-IN");
 }
 
-export function DualRangeSlider({ min, max, step = 100 }: DualRangeSliderProps) {
-  const [low, setLow] = useState(min);
-  const [high, setHigh] = useState(max);
+export function DualRangeSlider({ min, max, step = 100, value, onCommit }: DualRangeSliderProps) {
+  const [low, setLow] = useState(value?.[0] ?? min);
+  const [high, setHigh] = useState(value?.[1] ?? max);
+
+  // Follow externally cleared/changed filters without fighting an in-progress drag.
+  useEffect(() => {
+    setLow(value?.[0] ?? min);
+    setHigh(value?.[1] ?? max);
+  }, [value?.[0], value?.[1], min, max]);
+
+  const commit = (next: [number, number]) => onCommit?.(next);
 
   const lowPercent = ((low - min) / (max - min)) * 100;
   const highPercent = ((high - min) / (max - min)) * 100;
@@ -33,6 +44,8 @@ export function DualRangeSlider({ min, max, step = 100 }: DualRangeSliderProps) 
           step={step}
           value={low}
           onChange={(e) => setLow(Math.min(Number(e.target.value), high - step))}
+          onPointerUp={() => commit([low, high])}
+          onKeyUp={() => commit([low, high])}
           className="range-thumb absolute inset-0 w-full appearance-none bg-transparent"
         />
         <input
@@ -42,6 +55,8 @@ export function DualRangeSlider({ min, max, step = 100 }: DualRangeSliderProps) 
           step={step}
           value={high}
           onChange={(e) => setHigh(Math.max(Number(e.target.value), low + step))}
+          onPointerUp={() => commit([low, high])}
+          onKeyUp={() => commit([low, high])}
           className="range-thumb absolute inset-0 w-full appearance-none bg-transparent"
         />
       </div>

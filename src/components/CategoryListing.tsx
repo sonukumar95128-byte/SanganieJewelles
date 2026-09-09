@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Dropdown } from "@/components/Dropdown";
 import { FilterSidebar } from "@/components/FilterSidebar";
 import { InfiniteProductGrid } from "@/components/InfiniteProductGrid";
 import { getPriceRange, type DummyProduct } from "@/lib/dummy-images";
 import { useAdmin } from "@/lib/admin-store";
+import { applyFilters, countActive, parseFilters } from "@/lib/product-filters";
 
 type CategoryListingProps = {
   title: string;
@@ -16,15 +18,36 @@ type CategoryListingProps = {
   activeCategories?: string[];
 };
 
-export function CategoryListing({ title, pageId, fallbackBanner, products, activeCategories }: CategoryListingProps) {
+export function CategoryListing(props: CategoryListingProps) {
+  return (
+    <Suspense fallback={<ListingFallback title={props.title} />}>
+      <CategoryListingContent {...props} />
+    </Suspense>
+  );
+}
+
+function ListingFallback({ title }: { title: string }) {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+      <h1 className="font-heading italic text-3xl text-brand">{title}</h1>
+    </div>
+  );
+}
+
+function CategoryListingContent({ title, pageId, fallbackBanner, products, activeCategories }: CategoryListingProps) {
   const { pageBanners } = useAdmin();
   const bannerImage = pageBanners[pageId] ?? fallbackBanner;
   const { min, max } = getPriceRange(products);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sort, setSort] = useState("newest");
 
+  const searchParams = useSearchParams();
+  const filters = parseFilters((key) => searchParams.get(key));
+  const activeCount = countActive(filters);
+  const filteredProducts = applyFilters(products, filters);
+
   const toNum = (p: string) => Number(p.replace(/[^0-9.]/g, ""));
-  const sortedProducts = [...products].sort((a, b) => {
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sort === "price-asc") return toNum(a.price) - toNum(b.price);
     if (sort === "price-desc") return toNum(b.price) - toNum(a.price);
     if (sort === "bestselling") return b.rating - a.rating;
@@ -52,8 +75,16 @@ export function CategoryListing({ title, pageId, fallbackBanner, products, activ
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 4h18M7 12h10M11 20h2" />
             </svg>
             Filters
+            {activeCount > 0 && (
+              <span className="grid h-5 min-w-5 place-items-center rounded-full bg-gold px-1 text-[10px] font-medium text-brand">
+                {activeCount}
+              </span>
+            )}
           </button>
-          <span className="hidden lg:block" /> {/* spacer on desktop */}
+          <span className="hidden text-sm text-ink/50 lg:block">
+            {sortedProducts.length} {sortedProducts.length === 1 ? "piece" : "pieces"}
+            {activeCount > 0 && products.length !== sortedProducts.length && ` of ${products.length}`}
+          </span>
           <Dropdown
             defaultValue="newest"
             options={[
@@ -69,12 +100,23 @@ export function CategoryListing({ title, pageId, fallbackBanner, products, activ
         <div className="flex flex-col lg:flex-row lg:items-start gap-10">
           {/* Desktop sidebar — always visible */}
           <div className="hidden lg:block">
-            <FilterSidebar priceMin={min} priceMax={max} activeCategories={activeCategories} />
+            <FilterSidebar
+              priceMin={min}
+              priceMax={max}
+              products={products}
+              activeCategories={activeCategories}
+            />
           </div>
 
           {/* Products */}
           <div className="flex-1">
-            <InfiniteProductGrid products={sortedProducts} />
+            {sortedProducts.length === 0 ? (
+              <p className="rounded-xl border border-dashed border-beige py-16 text-center text-sm text-ink/50">
+                No pieces match these filters. Try widening your price range or clearing a filter.
+              </p>
+            ) : (
+              <InfiniteProductGrid products={sortedProducts} />
+            )}
           </div>
         </div>
       </div>
@@ -101,7 +143,13 @@ export function CategoryListing({ title, pageId, fallbackBanner, products, activ
             </div>
             {/* Scrollable filter content */}
             <div className="overflow-y-auto flex-1 px-5 pb-6">
-              <FilterSidebar priceMin={min} priceMax={max} activeCategories={activeCategories} mobileMode />
+              <FilterSidebar
+                priceMin={min}
+                priceMax={max}
+                products={products}
+                activeCategories={activeCategories}
+                mobileMode
+              />
             </div>
             {/* Apply button */}
             <div className="px-5 py-4 border-t border-beige shrink-0">

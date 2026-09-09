@@ -1,9 +1,16 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { DualRangeSlider } from "@/components/DualRangeSlider";
-import { categories, categoryToSlug } from "@/lib/dummy-images";
+import { categories, categoryToSlug, type DummyProduct } from "@/lib/dummy-images";
+import {
+  FACETS,
+  countActive,
+  facetOptions,
+  parseFilters,
+  type FacetParam,
+} from "@/lib/product-filters";
 
 type FilterSectionProps = {
   title: string;
@@ -14,10 +21,11 @@ type FilterSectionProps = {
 function FilterSection({ title, children, defaultOpen = true }: FilterSectionProps) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-beige py-4">
+    <div className="border-b border-beige py-3 last:border-b-0">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between text-sm font-medium text-brand"
+        aria-expanded={open}
+        className="flex w-full items-center justify-between text-sm font-medium text-brand"
       >
         {title}
         <span className="text-ink/40">{open ? "▾" : "▸"}</span>
@@ -29,68 +37,126 @@ function FilterSection({ title, children, defaultOpen = true }: FilterSectionPro
 
 function Checkbox({
   label,
+  count,
   checked,
   onChange,
 }: {
   label: string;
-  checked?: boolean;
-  onChange?: () => void;
+  count?: number;
+  checked: boolean;
+  onChange: () => void;
 }) {
   return (
-    <label className="flex items-center gap-2 text-sm text-ink/70 cursor-pointer">
+    <label className="flex cursor-pointer items-center gap-2 text-sm text-ink/70">
       <input
         type="checkbox"
         checked={checked}
         onChange={onChange}
         className="h-4 w-4 rounded border-beige accent-gold focus:ring-1 focus:ring-gold"
       />
-      {label}
+      <span className="flex-1">{label}</span>
+      {count !== undefined && <span className="text-xs text-ink/35">{count}</span>}
     </label>
-  );
-}
-
-function Pill({ label }: { label: string }) {
-  const [active, setActive] = useState(false);
-  return (
-    <button
-      onClick={() => setActive((a) => !a)}
-      className={
-        "rounded-full border px-3 py-1 text-xs transition-colors " +
-        (active ? "border-gold bg-gold text-brand" : "border-beige text-ink/70 hover:border-gold")
-      }
-    >
-      {label}
-    </button>
   );
 }
 
 type FilterSidebarProps = {
   priceMin: number;
   priceMax: number;
+  /** Everything in scope before filtering — facet options are counted from this. */
+  products: DummyProduct[];
   activeCategories?: string[];
   mobileMode?: boolean; // inside drawer — hide heading, remove sticky/border styles
 };
 
-export function FilterSidebar({ priceMin, priceMax, activeCategories = [], mobileMode = false }: FilterSidebarProps) {
+export function FilterSidebar({
+  priceMin,
+  priceMax,
+  products,
+  activeCategories = [],
+  mobileMode = false,
+}: FilterSidebarProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const filters = parseFilters((key) => searchParams.get(key));
+  const activeCount = countActive(filters);
+
+  const commit = (next: URLSearchParams) => {
+    const qs = next.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  };
+
+  const toggleFacetValue = (param: FacetParam, value: string) => {
+    const next = new URLSearchParams(searchParams.toString());
+    const current = filters.values[param];
+    const updated = current.includes(value)
+      ? current.filter((v) => v !== value)
+      : [...current, value];
+    if (updated.length) next.set(param, updated.join(","));
+    else next.delete(param);
+    commit(next);
+  };
+
+  const setPriceRange = ([low, high]: [number, number]) => {
+    const next = new URLSearchParams(searchParams.toString());
+    if (low > priceMin) next.set("minPrice", String(low));
+    else next.delete("minPrice");
+    if (high < priceMax) next.set("maxPrice", String(high));
+    else next.delete("maxPrice");
+    commit(next);
+  };
+
+  const toggleInStock = () => {
+    const next = new URLSearchParams(searchParams.toString());
+    if (filters.inStockOnly) next.delete("instock");
+    else next.set("instock", "1");
+    commit(next);
+  };
+
+  const clearAll = () => {
+    const next = new URLSearchParams(searchParams.toString());
+    ["minPrice", "maxPrice", "instock", ...FACETS.map((f) => f.param)].forEach((k) => next.delete(k));
+    commit(next);
+  };
 
   const toggleCategory = (slug: string) => {
-    const next = activeCategories.includes(slug)
+    const nextCategories = activeCategories.includes(slug)
       ? activeCategories.filter((s) => s !== slug)
       : [...activeCategories, slug];
 
-    if (next.length === 0) router.push("/jewellery");
-    else if (next.length === 1) router.push(`/jewellery/${next[0]}`);
-    else router.push(`/jewellery?category=${next.join(",")}`);
+    // Category changes the route; carry the other filters across with it.
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("category");
+    const rest = params.toString();
+    const suffix = rest ? `?${rest}` : "";
+
+    if (nextCategories.length === 0) router.push(`/jewellery${suffix}`);
+    else if (nextCategories.length === 1) router.push(`/jewellery/${nextCategories[0]}${suffix}`);
+    else
+      router.push(
+        `/jewellery?category=${nextCategories.join(",")}${rest ? `&${rest}` : ""}`
+      );
   };
+
+  const inStockCount = products.filter((p) => p.stock > 0).length;
 
   return (
     <aside
-      className={mobileMode
-        ? "w-full"
-        : "w-64 shrink-0 rounded-xl border border-beige p-5 sticky top-20 self-start max-h-[calc(100vh-6rem)] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:var(--color-beige)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-beige [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"}
+      className={
+        mobileMode
+          ? "w-full"
+          : "w-64 shrink-0 rounded-xl border border-beige p-5 sticky top-20 self-start max-h-[calc(100vh-6rem)] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:var(--color-beige)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-beige [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent"
+      }
     >
-      {!mobileMode && <h3 className="font-heading text-xl text-brand mb-4">Filters</h3>}
+      <div className={"flex items-center justify-between " + (mobileMode ? "mb-1" : "mb-4")}>
+        {!mobileMode && <h3 className="font-heading text-xl text-brand">Filters</h3>}
+        {activeCount > 0 && (
+          <button onClick={clearAll} className="text-xs text-gold hover:text-brand">
+            Clear all ({activeCount})
+          </button>
+        )}
+      </div>
 
       <FilterSection title="Category">
         {categories.map((c) => {
@@ -106,54 +172,43 @@ export function FilterSidebar({ priceMin, priceMax, activeCategories = [], mobil
         })}
       </FilterSection>
 
-      <FilterSection title="Price">
-        <DualRangeSlider min={priceMin} max={priceMax} step={100} />
-      </FilterSection>
+      {priceMax > priceMin && (
+        <FilterSection title="Price">
+          <DualRangeSlider
+            min={priceMin}
+            max={priceMax}
+            step={100}
+            value={[filters.minPrice ?? priceMin, filters.maxPrice ?? priceMax]}
+            onCommit={setPriceRange}
+          />
+        </FilterSection>
+      )}
 
-      <FilterSection title="Metal type">
-        {["Yellow gold", "Rose gold", "White gold", "Platinum", "Silver"].map((m) => (
-          <Checkbox key={m} label={m} />
-        ))}
-      </FilterSection>
-
-      <FilterSection title="Gold karat">
-        <div className="flex gap-2">
-          {["14k", "18k", "22k"].map((k) => (
-            <Pill key={k} label={k} />
-          ))}
-        </div>
-      </FilterSection>
-
-      <FilterSection title="Diamond type">
-        {["Natural", "Lab-grown", "Solitaire", "No diamond"].map((d) => (
-          <Checkbox key={d} label={d} />
-        ))}
-      </FilterSection>
-
-      <FilterSection title="Diamond colour">
-        <div className="flex gap-2">
-          {["D-F", "G-H", "I-J"].map((c) => (
-            <Pill key={c} label={c} />
-          ))}
-        </div>
-      </FilterSection>
-
-      <FilterSection title="Diamond clarity">
-        <div className="flex gap-2">
-          {["VVS", "VS", "SI"].map((c) => (
-            <Pill key={c} label={c} />
-          ))}
-        </div>
-      </FilterSection>
-
-      <FilterSection title="Occasion" defaultOpen={false}>
-        {["Bridal", "Everyday Light", "Gifting"].map((o) => (
-          <Checkbox key={o} label={o} />
-        ))}
-      </FilterSection>
+      {FACETS.map((facet) => {
+        const options = facetOptions(products, filters, facet.param);
+        if (options.length < 2) return null; // a single option filters nothing
+        return (
+          <FilterSection key={facet.param} title={facet.label}>
+            {options.map((o) => (
+              <Checkbox
+                key={o.value}
+                label={o.value}
+                count={o.count}
+                checked={filters.values[facet.param].includes(o.value)}
+                onChange={() => toggleFacetValue(facet.param, o.value)}
+              />
+            ))}
+          </FilterSection>
+        );
+      })}
 
       <FilterSection title="Availability" defaultOpen={false}>
-        <Checkbox label="In stock only" />
+        <Checkbox
+          label="In stock only"
+          count={inStockCount}
+          checked={filters.inStockOnly}
+          onChange={toggleInStock}
+        />
       </FilterSection>
     </aside>
   );

@@ -106,19 +106,19 @@ export function ProductCard({ slug, image, hoverImage, name, price, badge, href 
           <div className="h-3 w-3/4 rounded bg-beige mb-4" />
         )}
 
-        {/* Add to Bag + Wishlist in one row */}
-        <div className="flex items-center gap-2">
+        {/* Add to Bag + Wishlist + Compare in one row */}
+        <div className="flex items-center gap-1.5">
           {inBag ? (
             <Link
               href="/cart"
-              className="flex-1 rounded-full bg-brand text-center text-xs font-medium text-gold-light py-2 transition-colors hover:bg-brand-secondary whitespace-nowrap"
+              className="min-w-0 flex-1 truncate rounded-full bg-brand px-2 text-center text-xs font-medium text-gold-light py-2 transition-colors hover:bg-brand-secondary"
             >
-              Added ✓ View Bag
+              In Bag ✓
             </Link>
           ) : (
             <button
               onClick={() => addItem(slug)}
-              className="flex-1 rounded-full border border-brand text-xs font-medium text-brand py-2 transition-colors hover:bg-brand hover:text-gold-light whitespace-nowrap"
+              className="min-w-0 flex-1 truncate rounded-full border border-brand px-2 text-xs font-medium text-brand py-2 transition-colors hover:bg-brand hover:text-gold-light"
             >
               Add to Bag
             </button>
@@ -133,24 +133,25 @@ export function ProductCard({ slug, image, hoverImage, name, price, badge, href 
           >
             <span className="text-sm">{wishlisted ? "♥" : "♡"}</span>
           </button>
+          <button
+            onClick={() => toggleCompare(slug)}
+            disabled={!comparing && compareFull}
+            aria-label={comparing ? "Remove from compare" : "Add to compare"}
+            title={
+              !comparing && compareFull ? `You can compare up to ${COMPARE_LIMIT} items` : "Compare"
+            }
+            className={
+              "shrink-0 grid h-8 w-8 place-items-center rounded-full border text-sm transition-colors " +
+              (comparing
+                ? "border-gold bg-gold-light/20 text-gold"
+                : compareFull
+                  ? "border-beige text-ink/20 cursor-not-allowed"
+                  : "border-beige text-ink/40 hover:border-gold hover:text-gold")
+            }
+          >
+            ⇄
+          </button>
         </div>
-
-        <button
-          onClick={() => toggleCompare(slug)}
-          disabled={!comparing && compareFull}
-          title={!comparing && compareFull ? `You can compare up to ${COMPARE_LIMIT} items` : undefined}
-          className={
-            "mt-2 flex w-full items-center justify-center gap-1.5 rounded-full py-1.5 text-[11px] transition-colors " +
-            (comparing
-              ? "text-brand font-medium"
-              : compareFull
-                ? "text-ink/25 cursor-not-allowed"
-                : "text-ink/50 hover:text-brand")
-          }
-        >
-          <span aria-hidden="true">{comparing ? "☑" : "☐"}</span>
-          {comparing ? "Comparing" : "Compare"}
-        </button>
       </div>
     </div>
   );
