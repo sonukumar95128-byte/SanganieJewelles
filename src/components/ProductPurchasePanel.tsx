@@ -13,6 +13,7 @@ import {
 } from "@/lib/dummy-images";
 import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
+import { COMPARE_LIMIT, useCompare } from "@/lib/compare-store";
 import { SizeGuideModal } from "@/components/SizeGuideModal";
 
 type ProductPurchasePanelProps = {
@@ -46,6 +47,8 @@ export function ProductPurchasePanel({
   const inBag = items.some((i) => i.slug === slug);
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(slug);
+  const { isComparing, toggleCompare, isFull: compareFull } = useCompare();
+  const comparing = isComparing(slug);
   const [color, setColor] = useState(colorOptions[2].label);
   const [purity, setPurity] = useState(purityOptions[0]);
   const sizeOptions = getSizeOptions(category);
@@ -217,6 +220,22 @@ export function ProductPurchasePanel({
           }
         >
           {wishlisted ? "♥" : "♡"}
+        </button>
+        <button
+          onClick={() => toggleCompare(slug)}
+          disabled={!comparing && compareFull}
+          aria-label={comparing ? "Remove from compare" : "Add to compare"}
+          title={!comparing && compareFull ? `You can compare up to ${COMPARE_LIMIT} items` : "Compare"}
+          className={
+            "grid h-11 w-11 shrink-0 place-items-center rounded-full border text-sm transition-colors " +
+            (comparing
+              ? "border-gold bg-gold-light/20 text-gold"
+              : compareFull
+                ? "border-beige text-ink/20 cursor-not-allowed"
+                : "border-beige text-ink/60 hover:border-gold hover:text-gold")
+          }
+        >
+          ⇄
         </button>
       </div>
 

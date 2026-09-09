@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
+import { COMPARE_LIMIT, useCompare } from "@/lib/compare-store";
 
 type ProductCardProps = {
   slug: string;
@@ -19,6 +20,8 @@ export function ProductCard({ slug, image, hoverImage, name, price, badge, href 
   const inBag = items.some((i) => i.slug === slug);
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(slug);
+  const { isComparing, toggleCompare, isFull: compareFull } = useCompare();
+  const comparing = isComparing(slug);
 
   return (
     <div className="group bg-white rounded-2xl shadow-sm hover:shadow-md border border-beige/70 overflow-hidden transition-all duration-300 hover:-translate-y-1 animate-fadeUp">
@@ -131,6 +134,23 @@ export function ProductCard({ slug, image, hoverImage, name, price, badge, href 
             <span className="text-sm">{wishlisted ? "♥" : "♡"}</span>
           </button>
         </div>
+
+        <button
+          onClick={() => toggleCompare(slug)}
+          disabled={!comparing && compareFull}
+          title={!comparing && compareFull ? `You can compare up to ${COMPARE_LIMIT} items` : undefined}
+          className={
+            "mt-2 flex w-full items-center justify-center gap-1.5 rounded-full py-1.5 text-[11px] transition-colors " +
+            (comparing
+              ? "text-brand font-medium"
+              : compareFull
+                ? "text-ink/25 cursor-not-allowed"
+                : "text-ink/50 hover:text-brand")
+          }
+        >
+          <span aria-hidden="true">{comparing ? "☑" : "☐"}</span>
+          {comparing ? "Comparing" : "Compare"}
+        </button>
       </div>
     </div>
   );
