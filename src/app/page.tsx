@@ -147,7 +147,7 @@ export default async function Home() {
   // Derived
   const liveHeroSlides = heroSlidesAdmin
     .filter((s) => s.enabled)
-    .map((s) => ({ image: s.image, href: s.link, alt: s.title }));
+    .map((s) => ({ image: s.image, mobileImage: s.mobileImage, href: s.link, alt: s.title }));
 
   const homeSlides = promoStrips.filter((p) => p.position === "Homepage slider" && p.enabled !== false);
   const liveCollections = collections.filter((c) => c.enabled);

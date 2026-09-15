@@ -1,10 +1,53 @@
 "use client";
 
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type Slide = { image: string; href: string; alt: string };
+// mobileImage is a separate portrait design: banners carry their headline inside the
+// image, and a wide banner's text is too small to read on a phone.
+type Slide = { image: string; href: string; alt: string; mobileImage?: string };
+
+const DESKTOP_MEDIA = "(min-width: 768px)"; // Tailwind md
+
+function SlideImage({ slide, eager }: { slide: Slide; eager: boolean }) {
+  const loading = eager ? ("eager" as const) : ("lazy" as const);
+  const fetchPriority = eager ? ("high" as const) : undefined;
+
+  if (!slide.mobileImage) {
+    return (
+      <Image
+        src={slide.image}
+        alt={slide.alt}
+        fill
+        loading={loading}
+        fetchPriority={fetchPriority}
+        sizes="100vw"
+        className="object-cover"
+      />
+    );
+  }
+
+  const common = { alt: slide.alt, sizes: "100vw", loading, fetchPriority };
+  const {
+    props: { srcSet: desktopSrcSet },
+  } = getImageProps({ ...common, src: slide.image, width: 1600, height: 700 });
+  const {
+    props: { srcSet: mobileSrcSet, ...mobileProps },
+  } = getImageProps({ ...common, src: slide.mobileImage, width: 1080, height: 1350 });
+
+  return (
+    <picture>
+      <source media={DESKTOP_MEDIA} srcSet={desktopSrcSet} />
+      {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- alt is in mobileProps */}
+      <img
+        {...mobileProps}
+        srcSet={mobileSrcSet}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+    </picture>
+  );
+}
 
 function GlassArrow({
   direction,
@@ -46,9 +89,15 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
 
   const prev = () => setActive((i) => (i - 1 + slides.length) % slides.length);
   const next = () => setActive((i) => (i + 1) % slides.length);
+  const hasMobileArt = slides.some((s) => s.mobileImage);
 
   return (
-    <div className="relative aspect-[16/6] w-full overflow-hidden">
+    <div
+      className={
+        "relative w-full overflow-hidden " +
+        (hasMobileArt ? "aspect-[4/5] md:aspect-[16/7]" : "aspect-[16/7]")
+      }
+    >
       {slides.map((slide, i) => (
         <Link
           key={slide.href + i}
@@ -60,14 +109,7 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
           aria-hidden={i !== active}
           tabIndex={i === active ? 0 : -1}
         >
-          <Image
-            src={slide.image}
-            alt={slide.alt}
-            fill
-            priority={i === 0}
-            sizes="100vw"
-            className="object-cover"
-          />
+          <SlideImage slide={slide} eager={i === 0} />
         </Link>
       ))}
 

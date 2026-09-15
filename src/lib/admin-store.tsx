@@ -30,6 +30,7 @@ export type HeroSlideAdmin = {
   title: string;
   link: string;
   image: string;
+  mobileImage?: string; // portrait version shown on phones
   enabled: boolean;
 };
 

@@ -35,10 +35,27 @@ export default function AdminBannersPage() {
         {heroSlidesAdmin.map((slide, i) => (
           <div key={slide.id} className="flex items-center gap-4 px-4 py-3">
             <div className="shrink-0">
+              <p className="mb-1 text-[10px] uppercase tracking-wide text-ink/40">Desktop</p>
               <div className="relative h-14 w-20 rounded-lg overflow-hidden bg-beige border border-beige mb-1">
                 <Image src={slide.image} alt={slide.title} fill sizes="80px" className="object-cover" />
               </div>
-              <BannerImagePicker value={slide.image} onChange={(image) => updateHeroSlide(slide.id, { image })} recommended="1920 × 700 px · full-width hero banner" />
+              <BannerImagePicker value={slide.image} onChange={(image) => updateHeroSlide(slide.id, { image })} recommended="1600 × 700 px · 16:7 wide hero banner" />
+            </div>
+
+            <div className="shrink-0">
+              <p className="mb-1 text-[10px] uppercase tracking-wide text-ink/40">Phone</p>
+              <div className="relative h-14 w-11 rounded-lg overflow-hidden bg-beige border border-beige mb-1">
+                {slide.mobileImage ? (
+                  <Image src={slide.mobileImage} alt={`${slide.title} (phone)`} fill sizes="44px" className="object-cover" />
+                ) : (
+                  <span className="grid h-full place-items-center text-[9px] text-ink/40">none</span>
+                )}
+              </div>
+              <BannerImagePicker
+                value={slide.mobileImage ?? ""}
+                onChange={(mobileImage) => updateHeroSlide(slide.id, { mobileImage: mobileImage || undefined })}
+                recommended="1080 × 1350 px · 4:5 portrait, for phones"
+              />
             </div>
 
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">

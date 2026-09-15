@@ -23,7 +23,7 @@ export const categoryBannerImages: Record<string, string> = {
 export const heroImage =
   "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1600&h=700&fit=crop";
 
-export const heroSlides = [
+export const heroSlides: { image: string; mobileImage?: string; href: string; alt: string }[] = [
   {
     image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1600&h=700&fit=crop",
     href: "/jewellery",
