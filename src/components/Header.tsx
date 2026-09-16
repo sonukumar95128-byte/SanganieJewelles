@@ -77,7 +77,6 @@ export function Header() {
   const pathname = usePathname();
   const [search, setSearch] = useState("");
   const [hidden, setHidden] = useState(false);
-  const [scrolledUp, setScrolledUp] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const lastY = useRef(0);
 
@@ -94,7 +93,6 @@ export function Header() {
       const goingDown = y > lastY.current;
 
       setHidden(goingDown && y > 80);
-      setScrolledUp(!goingDown && y > 80);
       lastY.current = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -119,16 +117,13 @@ export function Header() {
     };
   }, [menuOpen]);
 
-  const dark = scrolledUp;
-
   return (
     <>
     <header
       className={
         "sticky top-0 z-50 transition-all duration-300 " +
         (hidden ? "-translate-y-full" : "translate-y-0") +
-        " " +
-        (dark ? "bg-brand border-b border-gold-light/15 shadow-md" : "bg-white border-b border-beige")
+        " bg-brand border-b border-gold-light/15"
       }
     >
       <div className="mx-auto max-w-7xl grid grid-cols-[auto_1fr_auto] items-center gap-3 sm:gap-6 px-4 sm:px-6 py-3">
@@ -138,8 +133,7 @@ export function Header() {
             aria-label="Open menu"
             aria-expanded={menuOpen}
             className={
-              "grid h-10 w-10 shrink-0 place-items-center rounded-full transition-colors lg:hidden " +
-              (dark ? "text-gold-light hover:bg-brand-secondary" : "text-ink hover:bg-beige")
+              "grid h-10 w-10 shrink-0 place-items-center rounded-full text-gold-light transition-colors hover:bg-brand-secondary lg:hidden"
             }
           >
             <MenuIcon />
@@ -159,8 +153,7 @@ export function Header() {
 
         <nav
           className={
-            "hidden lg:flex items-center justify-center gap-4 xl:gap-8 whitespace-nowrap text-sm font-medium transition-colors " +
-            (dark ? "text-gold-light" : "text-ink")
+            "hidden lg:flex items-center justify-center gap-4 xl:gap-8 whitespace-nowrap text-sm font-medium text-gold-light transition-colors"
           }
         >
           {navLinks.map((link) => (
@@ -174,8 +167,7 @@ export function Header() {
           <form onSubmit={handleSearchSubmit} className="relative hidden sm:block">
             <span
               className={
-                "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 " +
-                (dark ? "text-gold-light/50" : "text-ink/40")
+                "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gold-light/50"
               }
             >
               <SearchIcon />
@@ -186,10 +178,7 @@ export function Header() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
               className={
-                "w-44 lg:w-32 xl:w-44 rounded-full border pl-9 pr-4 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-gold transition-colors " +
-                (dark
-                  ? "border-gold-light/25 bg-brand-secondary/40 text-gold-light placeholder:text-gold-light/40"
-                  : "border-beige bg-ivory text-ink placeholder:text-ink/40")
+                "w-44 lg:w-32 xl:w-44 rounded-full border border-gold-light/25 bg-brand-secondary/40 pl-9 pr-4 py-1.5 text-sm text-gold-light placeholder:text-gold-light/40 focus:outline-none focus:ring-1 focus:ring-gold transition-colors"
               }
             />
           </form>
@@ -197,8 +186,7 @@ export function Header() {
             href="/account/wishlist"
             aria-label="Wishlist"
             className={
-              "relative grid h-9 w-9 place-items-center rounded-full border transition-colors hover:border-gold hover:text-gold " +
-              (dark ? "border-gold-light/25 text-gold-light/80" : "border-beige text-ink/70")
+              "relative grid h-9 w-9 place-items-center rounded-full border border-gold-light/25 text-gold-light/80 transition-colors hover:border-gold hover:text-gold"
             }
           >
             <HeartIcon />
@@ -212,8 +200,7 @@ export function Header() {
             href="/cart"
             aria-label="Cart"
             className={
-              "relative grid h-9 w-9 place-items-center rounded-full border transition-colors hover:border-gold hover:text-gold " +
-              (dark ? "border-gold-light/25 text-gold-light/80" : "border-beige text-ink/70")
+              "relative grid h-9 w-9 place-items-center rounded-full border border-gold-light/25 text-gold-light/80 transition-colors hover:border-gold hover:text-gold"
             }
           >
             <BagIcon />
@@ -227,8 +214,7 @@ export function Header() {
             href={isLoggedIn ? "/account" : "/login"}
             aria-label="Account"
             className={
-              "grid h-9 w-9 place-items-center rounded-full border transition-colors hover:border-gold hover:text-gold " +
-              (dark ? "border-gold-light/25 text-gold-light/80" : "border-beige text-ink/70")
+              "grid h-9 w-9 place-items-center rounded-full border border-gold-light/25 text-gold-light/80 transition-colors hover:border-gold hover:text-gold"
             }
           >
             {isLoggedIn && user ? (
