@@ -149,7 +149,8 @@ const ORDERS_KEY = "sanganie-admin-orders-v2";
 const HOMEPAGE_KEY = "sanganie-admin-homepage-v3";
 // v2: bumped after adding promo slider strips + enabled field.
 // v4: banners now ship uncropped from /banners/full.
-const BANNERS_KEY = "sanganie-admin-banners-v4";
+// v5: new 19:10 desktop hero banners.
+const BANNERS_KEY = "sanganie-admin-banners-v5";
 const TESTIMONIALS_KEY = "sanganie-admin-testimonials";
 // v2: productCount replaced with real productSlugs[] for collection-to-product linking.
 const COLLECTIONS_KEY = "sanganie-admin-collections-v4";

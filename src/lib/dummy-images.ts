@@ -24,12 +24,8 @@ export const categoryBannerImages: Record<string, string> = {
 
 // Shop, category and collection pages show their banner as a slim 16:4 strip. This is how far down
 // (0 = top, 100 = bottom) to anchor each picture so its jewellery stays inside the strip.
-// The desktop hero shows its banners in a 19:10 frame (79% of the height), anchored the same way.
+// The desktop hero banners are made at 19:10 to fill their frame exactly, so they need no anchor.
 export const bannerFocus: Record<string, number> = {
-  "/banners/full/hero-1-desktop.webp": 57,
-  "/banners/full/hero-2-desktop.webp": 45,
-  "/banners/full/hero-3-desktop.webp": 88,
-  "/banners/full/hero-4-desktop.webp": 76,
   "/banners/full/cat-shop.webp": 52,
   "/banners/full/cat-rings.webp": 40,
   "/banners/full/cat-earrings.webp": 48,
@@ -42,31 +38,31 @@ export const bannerFocus: Record<string, number> = {
   "/banners/full/collection-gifting.webp": 69,
 };
 
-export const heroImage = "/banners/full/hero-1-desktop.webp";
+export const heroImage = "/banners/full/hero-1-wide.webp";
 
 // Banners ship uncropped at ChatGPT's own sizes: 1536×1024 (3:2), and 1024×1536 (2:3) for phones.
 // Headlines are drawn into the hero images, so each slide has a separate portrait version for phones.
 export const heroSlides: { image: string; mobileImage?: string; href: string; alt: string }[] = [
   {
-    image: "/banners/full/hero-1-desktop.webp",
+    image: "/banners/full/hero-1-wide.webp",
     mobileImage: "/banners/full/hero-1-mobile.webp",
     href: "/jewellery/pendants",
     alt: "Elegance in every hue — pendant collection",
   },
   {
-    image: "/banners/full/hero-2-desktop.webp",
+    image: "/banners/full/hero-2-wide.webp",
     mobileImage: "/banners/full/hero-2-mobile.webp",
     href: "/jewellery/earrings",
     alt: "Grace in every detail — earring collection",
   },
   {
-    image: "/banners/full/hero-3-desktop.webp",
+    image: "/banners/full/hero-3-wide.webp",
     mobileImage: "/banners/full/hero-3-mobile.webp",
     href: "/jewellery/necklaces",
     alt: "Timeless grace — mangalsutra collection",
   },
   {
-    image: "/banners/full/hero-4-desktop.webp",
+    image: "/banners/full/hero-4-wide.webp",
     mobileImage: "/banners/full/hero-4-mobile.webp",
     href: "/jewellery",
     alt: "Every piece certified — hallmarked gold and certified diamonds",

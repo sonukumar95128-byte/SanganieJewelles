@@ -35,7 +35,7 @@ function SlideImage({ slide, eager }: { slide: Slide; eager: boolean }) {
   const common = { alt: slide.alt, sizes: "100vw", loading, fetchPriority };
   const {
     props: { srcSet: desktopSrcSet },
-  } = getImageProps({ ...common, src: slide.image, width: 1536, height: 1024 });
+  } = getImageProps({ ...common, src: slide.image, width: 1729, height: 910 });
   const {
     props: { srcSet: mobileSrcSet, ...mobileProps },
   } = getImageProps({ ...common, src: slide.mobileImage, width: 1024, height: 1536 });
