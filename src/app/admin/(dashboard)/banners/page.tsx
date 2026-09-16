@@ -130,13 +130,13 @@ export default function AdminBannersPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
         {PAGE_BANNER_LABELS.map(({ id, label }) => (
           <div key={id} className="rounded-xl border border-beige bg-white p-4">
-            <div className="relative aspect-[3/2] rounded-lg overflow-hidden bg-beige border border-beige mb-2">
+            <div className="relative aspect-[4/1] rounded-lg overflow-hidden bg-beige border border-beige mb-2">
               {pageBanners[id] && (
                 <img src={pageBanners[id]} alt={label} className="h-full w-full object-cover" />
               )}
             </div>
             <p className="text-xs font-medium text-brand mb-2">{label}</p>
-            <BannerImagePicker value={pageBanners[id] ?? ""} onChange={(url) => updatePageBanner(id, url)} recommended="1536 × 1024 px · ChatGPT landscape (3:2), shown uncropped" />
+            <BannerImagePicker value={pageBanners[id] ?? ""} onChange={(url) => updatePageBanner(id, url)} recommended="1536 × 1024 px (3:2) · shown as a wide 4:1 strip, keep the jewellery in the middle band" />
           </div>
         ))}
       </div>

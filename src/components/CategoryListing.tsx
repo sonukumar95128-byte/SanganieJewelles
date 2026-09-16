@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Dropdown } from "@/components/Dropdown";
 import { FilterSidebar } from "@/components/FilterSidebar";
 import { InfiniteProductGrid } from "@/components/InfiniteProductGrid";
-import { getPriceRange, type DummyProduct } from "@/lib/dummy-images";
+import { bannerFocus, getPriceRange, type DummyProduct } from "@/lib/dummy-images";
 import { useAdmin } from "@/lib/admin-store";
 import { applyFilters, countActive, parseFilters } from "@/lib/product-filters";
 
@@ -56,10 +56,18 @@ function CategoryListingContent({ title, pageId, fallbackBanner, products, activ
 
   return (
     <div>
-      {/* Banner — full width at the picture's own 3:2 shape. Only on very wide screens does the
-          900px cap trim a strip of background from the top and bottom. */}
-      <section className="relative aspect-[3/2] max-h-[900px] w-full overflow-hidden bg-brand">
-        <Image src={bannerImage} alt={title} fill loading="eager" fetchPriority="high" sizes="100vw" className="object-cover" />
+      {/* Banner — full-width strip (16:4 on desktop, 2:1 on phones), anchored on the jewellery. */}
+      <section className="relative aspect-[2/1] w-full overflow-hidden bg-brand md:aspect-[16/4]">
+        <Image
+          src={bannerImage}
+          alt={title}
+          fill
+          loading="eager"
+          fetchPriority="high"
+          sizes="100vw"
+          className="object-cover"
+          style={{ objectPosition: `50% ${bannerFocus[bannerImage] ?? 50}%` }}
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-brand/75 via-brand/20 via-35% to-transparent to-60%" />
         <div className="absolute inset-0 mx-auto flex max-w-7xl flex-col justify-center px-5 sm:px-6 lg:px-8">
           <div className="animate-fadeUp">

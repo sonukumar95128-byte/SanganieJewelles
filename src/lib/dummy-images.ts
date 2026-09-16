@@ -20,6 +20,21 @@ export const categoryBannerImages: Record<string, string> = {
   "Nose Pins": "/banners/full/cat-nosepins.webp",
 };
 
+// Shop, category and collection pages show their banner as a slim 16:4 strip. This is how far down
+// (0 = top, 100 = bottom) to anchor each picture so its jewellery stays inside the strip.
+export const bannerFocus: Record<string, number> = {
+  "/banners/full/cat-shop.webp": 52,
+  "/banners/full/cat-rings.webp": 40,
+  "/banners/full/cat-earrings.webp": 48,
+  "/banners/full/cat-necklaces.webp": 50,
+  "/banners/full/cat-bracelets.webp": 40,
+  "/banners/full/cat-pendants.webp": 40,
+  "/banners/full/cat-nosepins.webp": 56,
+  "/banners/full/collection-bridal.webp": 60,
+  "/banners/full/collection-everyday-light.webp": 71,
+  "/banners/full/collection-gifting.webp": 69,
+};
+
 export const heroImage = "/banners/full/hero-1-desktop.webp";
 
 // Banners ship uncropped at ChatGPT's own sizes: 1536×1024 (3:2), and 1024×1536 (2:3) for phones.
