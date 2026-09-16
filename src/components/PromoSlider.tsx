@@ -61,7 +61,7 @@ export function PromoSlider({ slides }: { slides: PromoStrip[] }) {
             <div
               key={s.id}
               className={
-                "flex-shrink-0 w-[70%] rounded-2xl overflow-hidden transition-opacity duration-300 " +
+                "relative flex-shrink-0 w-[86%] sm:w-[70%] rounded-2xl overflow-hidden transition-opacity duration-300 " +
                 (i === active ? "opacity-100" : "opacity-60")
               }
               style={{ aspectRatio: "16/6" }}
@@ -71,7 +71,7 @@ export function PromoSlider({ slides }: { slides: PromoStrip[] }) {
               {s.title && i === active && (
                 <>
                   <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
-                  <p className="absolute bottom-6 left-8 font-heading italic text-xl sm:text-2xl text-white drop-shadow pointer-events-none">
+                  <p className="absolute bottom-3 left-4 right-4 sm:bottom-6 sm:left-8 sm:right-auto font-heading italic text-base leading-snug sm:text-2xl text-white drop-shadow pointer-events-none">
                     {s.title}
                   </p>
                 </>

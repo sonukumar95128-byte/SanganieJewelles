@@ -1,4 +1,4 @@
-// Marketing imagery (hero/banners/collections) stays as Unsplash placeholders until real lifestyle shots are supplied.
+// Marketing banners live in public/banners, each built from a real catalog piece.
 // Real catalog product data/photos are generated from the CSV export — see src/lib/real-products.ts.
 import { realProducts } from "@/lib/real-products";
 
@@ -12,42 +12,67 @@ export const categoryImages: Record<string, string> = {
 };
 
 export const categoryBannerImages: Record<string, string> = {
-  Rings: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1600&h=500&fit=crop",
-  Earrings: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1600&h=500&fit=crop",
-  Necklaces: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1600&h=500&fit=crop",
-  Bracelets: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1600&h=500&fit=crop",
-  Pendants: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1600&h=500&fit=crop",
-  "Nose Pins": "https://images.unsplash.com/photo-1631214524115-de7188ff5402?w=1600&h=500&fit=crop",
+  Rings: "/banners/cat-rings.webp",
+  Earrings: "/banners/cat-earrings.webp",
+  Necklaces: "/banners/cat-necklaces.webp",
+  Bracelets: "/banners/cat-bracelets.webp",
+  Pendants: "/banners/cat-pendants.webp",
+  "Nose Pins": "/banners/cat-nosepins.webp",
 };
 
-export const heroImage =
-  "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1600&h=700&fit=crop";
+export const heroImage = "/banners/hero-1-desktop.webp";
 
+// Headlines are drawn into these images, so each slide has a separate portrait version for phones.
 export const heroSlides: { image: string; mobileImage?: string; href: string; alt: string }[] = [
   {
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1600&h=700&fit=crop",
+    image: "/banners/hero-1-desktop.webp",
+    mobileImage: "/banners/hero-1-mobile.webp",
+    href: "/jewellery/pendants",
+    alt: "Elegance in every hue — pendant collection",
+  },
+  {
+    image: "/banners/hero-2-desktop.webp",
+    mobileImage: "/banners/hero-2-mobile.webp",
+    href: "/jewellery/earrings",
+    alt: "Grace in every detail — earring collection",
+  },
+  {
+    image: "/banners/hero-3-desktop.webp",
+    mobileImage: "/banners/hero-3-mobile.webp",
+    href: "/jewellery/necklaces",
+    alt: "Timeless grace — mangalsutra collection",
+  },
+  {
+    image: "/banners/hero-4-desktop.webp",
+    mobileImage: "/banners/hero-4-mobile.webp",
     href: "/jewellery",
-    alt: "New arrivals",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1600&h=700&fit=crop",
-    href: "/collections/bridal",
-    alt: "Bridal collection",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1600&h=700&fit=crop",
-    href: "/jewellery/rings",
-    alt: "Rings collection",
+    alt: "Every piece certified — hallmarked gold and certified diamonds",
   },
 ];
 
-export const promoImage =
-  "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=1600&h=500&fit=crop";
+export const promoImage = "/banners/cat-shop.webp";
 
 export const collectionImages: Record<string, string> = {
-  Bridal: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&h=450&fit=crop",
-  "Everyday Light": "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&h=450&fit=crop",
-  Gifting: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&h=450&fit=crop",
+  Bridal: "/banners/collection-bridal.webp",
+  "Everyday Light": "/banners/collection-everyday-light.webp",
+  Gifting: "/banners/collection-gifting.webp",
+};
+
+// Slim header strips for each collection page, cropped separately so the piece stays in frame.
+export const collectionBannerImages: Record<string, string> = {
+  bridal: "/banners/collection-bridal-header.webp",
+  "everyday-light": "/banners/collection-everyday-light-header.webp",
+  gifting: "/banners/collection-gifting-header.webp",
+};
+
+// Homepage offer slider and the product-page strip. The site prints each title over the image.
+export const promoBanners = {
+  homepage: [
+    { id: "promo-slide-1", title: "New Collection — Explore Now", link: "/jewellery/necklaces", image: "/banners/promo-1.webp" },
+    { id: "promo-slide-2", title: "Festive Sale — Flat 20% Off", link: "/jewellery/pendants", image: "/banners/promo-2.webp" },
+    { id: "promo-slide-3", title: "Buy 2, Get Free Gold Polish", link: "/jewellery/rings", image: "/banners/promo-3.webp" },
+  ],
+  productPage: { id: "product-page", title: "Buy 2, get free gold polish", link: "/jewellery", image: "/banners/product-page.webp" },
 };
 
 export const productImages = [

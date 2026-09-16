@@ -39,14 +39,14 @@ export default function AdminBannersPage() {
               <div className="relative h-14 w-20 rounded-lg overflow-hidden bg-beige border border-beige mb-1">
                 <Image src={slide.image} alt={slide.title} fill sizes="80px" className="object-cover" />
               </div>
-              <BannerImagePicker value={slide.image} onChange={(image) => updateHeroSlide(slide.id, { image })} recommended="1600 × 700 px · 16:7 wide hero banner" />
+              <BannerImagePicker value={slide.image} onChange={(image) => updateHeroSlide(slide.id, { image })} recommended="1536 × 672 px · 16:7 wide hero banner" />
             </div>
 
             <div className="shrink-0">
               <p className="mb-1 text-[10px] uppercase tracking-wide text-ink/40">Phone</p>
-              <div className="relative h-14 w-11 rounded-lg overflow-hidden bg-beige border border-beige mb-1">
+              <div className="relative h-14 w-[38px] rounded-lg overflow-hidden bg-beige border border-beige mb-1">
                 {slide.mobileImage ? (
-                  <Image src={slide.mobileImage} alt={`${slide.title} (phone)`} fill sizes="44px" className="object-cover" />
+                  <Image src={slide.mobileImage} alt={`${slide.title} (phone)`} fill sizes="38px" className="object-cover" />
                 ) : (
                   <span className="grid h-full place-items-center text-[9px] text-ink/40">none</span>
                 )}
@@ -54,7 +54,7 @@ export default function AdminBannersPage() {
               <BannerImagePicker
                 value={slide.mobileImage ?? ""}
                 onChange={(mobileImage) => updateHeroSlide(slide.id, { mobileImage: mobileImage || undefined })}
-                recommended="1080 × 1350 px · 4:5 portrait, for phones"
+                recommended="1024 × 1536 px · 2:3 portrait, for phones"
               />
             </div>
 
@@ -136,7 +136,7 @@ export default function AdminBannersPage() {
               )}
             </div>
             <p className="text-xs font-medium text-brand mb-2">{label}</p>
-            <BannerImagePicker value={pageBanners[id] ?? ""} onChange={(url) => updatePageBanner(id, url)} recommended="1600 × 400 px · page top banner (4:1 ratio)" />
+            <BannerImagePicker value={pageBanners[id] ?? ""} onChange={(url) => updatePageBanner(id, url)} recommended="1536 × 384 px · page top banner (4:1 ratio)" />
           </div>
         ))}
       </div>
@@ -163,7 +163,7 @@ export default function AdminBannersPage() {
               )}
             </div>
             <div className="mb-2">
-              <BannerImagePicker value={strip.image} onChange={(image) => updatePromoStrip(strip.id, { image })} recommended="1600 × 600 px · promo slider (16:6 ratio)" />
+              <BannerImagePicker value={strip.image} onChange={(image) => updatePromoStrip(strip.id, { image })} recommended="1536 × 576 px · promo slider (16:6 ratio)" />
             </div>
             <div className="flex gap-2 mb-2">
               <input
@@ -202,7 +202,7 @@ export default function AdminBannersPage() {
       <h2 className="text-sm font-medium text-brand mb-3">Single product page banner</h2>
       {promoStrips.filter((s) => s.id === "product-page").map((strip) => (
         <div key={strip.id} className="rounded-xl border border-beige bg-white p-4 max-w-sm mb-10">
-          <div className="relative aspect-[16/6] rounded-lg overflow-hidden bg-beige border border-beige mb-2">
+          <div className="relative aspect-[4/1] rounded-lg overflow-hidden bg-beige border border-beige mb-2">
             {strip.image ? (
               <img src={strip.image} alt={strip.title} className="h-full w-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
             ) : (
@@ -210,7 +210,7 @@ export default function AdminBannersPage() {
             )}
           </div>
           <div className="mb-2">
-            <BannerImagePicker value={strip.image} onChange={(image) => updatePromoStrip(strip.id, { image })} recommended="1600 × 600 px · product page promo banner" />
+            <BannerImagePicker value={strip.image} onChange={(image) => updatePromoStrip(strip.id, { image })} recommended="1536 × 384 px · product page banner (4:1 ratio)" />
           </div>
           <input
             value={strip.title}

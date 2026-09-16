@@ -15,8 +15,8 @@ import {
   dummyProducts,
   dummyTestimonials,
   heroSlides,
-  productImages,
   collectionImages,
+  promoBanners,
   priceBands,
   relationShops,
   getProductBySlug,
@@ -51,13 +51,15 @@ const defaultHeroSlides: HeroSlideAdmin[] = heroSlides.map((s, i) => ({
   title: s.alt,
   link: s.href,
   image: s.image,
+  mobileImage: s.mobileImage,
   enabled: true,
 }));
 
-const defaultPromoStrips: PromoStrip[] = [
-  { id: "promo-slide-1", position: "Homepage slider", title: "New Collection", link: "/jewellery", image: productImages[6], enabled: true },
-  { id: "promo-slide-2", position: "Homepage slider", title: "Festive Sale", link: "/jewellery", image: productImages[2], enabled: true },
-];
+const defaultPromoStrips: PromoStrip[] = promoBanners.homepage.map((p) => ({
+  ...p,
+  position: "Homepage slider",
+  enabled: true,
+}));
 
 const defaultCollections: AdminCollection[] = [
   {

@@ -31,10 +31,10 @@ function SlideImage({ slide, eager }: { slide: Slide; eager: boolean }) {
   const common = { alt: slide.alt, sizes: "100vw", loading, fetchPriority };
   const {
     props: { srcSet: desktopSrcSet },
-  } = getImageProps({ ...common, src: slide.image, width: 1600, height: 700 });
+  } = getImageProps({ ...common, src: slide.image, width: 1536, height: 672 });
   const {
     props: { srcSet: mobileSrcSet, ...mobileProps },
-  } = getImageProps({ ...common, src: slide.mobileImage, width: 1080, height: 1350 });
+  } = getImageProps({ ...common, src: slide.mobileImage, width: 1024, height: 1536 });
 
   return (
     <picture>
@@ -95,7 +95,7 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
     <div
       className={
         "relative w-full overflow-hidden " +
-        (hasMobileArt ? "aspect-[4/5] md:aspect-[16/7]" : "aspect-[16/7]")
+        (hasMobileArt ? "aspect-[2/3] md:aspect-[16/7]" : "aspect-[16/7]")
       }
     >
       {slides.map((slide, i) => (

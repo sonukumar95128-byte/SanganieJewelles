@@ -6,8 +6,12 @@ import {
   collectionImages,
   dummyProducts,
   dummyTestimonials,
+  collectionBannerImages,
+  categoryBannerImages,
   heroSlides,
+  promoBanners,
   productImages,
+  promoImage,
   slugify,
   type Category,
   type DummyProduct,
@@ -140,17 +144,17 @@ const ORDERS_KEY = "sanganie-admin-orders-v2";
 // v2: bumped after adding manageHref links to sections.
 const HOMEPAGE_KEY = "sanganie-admin-homepage-v3";
 // v2: bumped after adding promo slider strips + enabled field.
-const BANNERS_KEY = "sanganie-admin-banners-v2";
+const BANNERS_KEY = "sanganie-admin-banners-v3";
 const TESTIMONIALS_KEY = "sanganie-admin-testimonials";
 // v2: productCount replaced with real productSlugs[] for collection-to-product linking.
-const COLLECTIONS_KEY = "sanganie-admin-collections-v2";
+const COLLECTIONS_KEY = "sanganie-admin-collections-v3";
 const COUPONS_KEY = "sanganie-admin-coupons";
 const SETTINGS_KEY = "sanganie-admin-settings";
 const PRODUCT_REVIEWS_KEY = "sanganie-product-reviews";
 const NEW_ARRIVALS_KEY = "sanganie-admin-new-arrivals";
 const BEST_SELLERS_KEY = "sanganie-admin-best-sellers";
 const CATEGORY_IMAGES_KEY = "sanganie-admin-category-images";
-const PAGE_BANNERS_KEY = "sanganie-admin-page-banners";
+const PAGE_BANNERS_KEY = "sanganie-admin-page-banners-v2";
 const REELS_KEY = "sanganie-admin-reels";
 const TRUST_BADGES_KEY = "sanganie-trust-badges";
 
@@ -182,24 +186,20 @@ const seedHeroSlides: HeroSlideAdmin[] = heroSlides.map((s, i) => ({
   title: s.alt,
   link: s.href,
   image: s.image,
+  mobileImage: s.mobileImage,
   enabled: true,
 }));
 
 const seedPromoStrips: PromoStrip[] = [
-  { id: "promo-slide-1", position: "Homepage slider", title: "New Collection — Explore Now", link: "/jewellery", image: productImages[6], enabled: true },
-  { id: "promo-slide-2", position: "Homepage slider", title: "Festive Sale — Flat 20% Off", link: "/jewellery?offer=true", image: productImages[2], enabled: true },
-  { id: "promo-slide-3", position: "Homepage slider", title: "Buy 2, Get Free Gold Polish", link: "/jewellery", image: productImages[4], enabled: true },
-  { id: "product-page", position: "Single product page", title: "Buy 2, get free gold polish", link: "/jewellery", image: productImages[2], enabled: true },
+  ...promoBanners.homepage.map((p) => ({ ...p, position: "Homepage slider", enabled: true })),
+  { ...promoBanners.productPage, position: "Single product page", enabled: true },
 ];
 
+// Keys match CategoryListing's pageId: "shop", category slugs, and collection-<slug>.
 const defaultPageBanners: Record<string, string> = {
-  shop: "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=1600&h=500&fit=crop",
-  rings: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1600&h=500&fit=crop",
-  earrings: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1600&h=500&fit=crop",
-  necklaces: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1600&h=500&fit=crop",
-  bracelets: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1600&h=500&fit=crop",
-  pendants: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1600&h=500&fit=crop",
-  "nose-pins": "https://images.unsplash.com/photo-1631214524115-de7188ff5402?w=1600&h=500&fit=crop",
+  shop: promoImage,
+  ...Object.fromEntries(Object.entries(categoryBannerImages).map(([cat, url]) => [slugify(cat), url])),
+  ...Object.fromEntries(Object.entries(collectionBannerImages).map(([slug, url]) => [`collection-${slug}`, url])),
 };
 
 const seedTestimonials: AdminTestimonial[] = dummyTestimonials.map((t, i) => ({
