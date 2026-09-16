@@ -212,8 +212,12 @@ export default async function Home() {
         )}
 
         {/* Shop by Price */}
-        {isOn("shop-by-price") && <PriceTiles bands={priceBands} />}
+      </div>
 
+      {/* Shop by Price — background runs full width */}
+      {isOn("shop-by-price") && <PriceTiles bands={priceBands} />}
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 space-y-16">
         {/* New Arrivals */}
         {isOn("new-arrivals") && (
           <section>
