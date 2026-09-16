@@ -175,8 +175,12 @@ export default async function Home() {
   return (
     <div className="space-y-16 pb-16">
       <ScrollReveal />
-      {/* Hero — full bleed slider */}
-      {isOn("hero") && <HeroSlider slides={liveHeroSlides} />}
+      {/* Hero — full bleed slider. The category band sits flush beneath it, with no white gap. */}
+      {isOn("hero") && (
+        <div className={isOn("categories") ? "mb-0" : undefined}>
+          <HeroSlider slides={liveHeroSlides} />
+        </div>
+      )}
 
       {/* Category circles — gradient band, each circle in a frosted glass ring */}
       {isOn("categories") && (
@@ -291,7 +295,7 @@ export default async function Home() {
 
       {/* Watch & Shop — video reels on the deep green band */}
       {isOn("reels") && reels.filter((r) => r.enabled).length > 0 && (
-        <SectionBand tone="green">
+        <SectionBand tone="green" className={isOn("testimonials") ? "mb-0" : ""}>
           <section>
             <div data-reveal>
               <SectionHeading title="Watch & Shop" subtitle="Tap a reel to explore what's in it" tone="light" />
