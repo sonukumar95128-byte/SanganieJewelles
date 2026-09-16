@@ -78,7 +78,7 @@ function PriceTile({ band, index }: { band: PriceBand; index: number }) {
         <span className="text-[5.5cqw] uppercase tracking-[0.22em] text-gold-light">
           {band.kicker}
         </span>
-        <span className="mt-[1.5cqw] font-heading text-[17cqw] font-semibold leading-none text-[#fbf3dc]">
+        <span className="mt-[2cqw] font-sans text-[13cqw] font-semibold leading-none tracking-tight text-[#fbf3dc]">
           {band.amount}
         </span>
         <span className="mt-[5cqw] border-b border-transparent pb-0.5 text-[4.5cqw] uppercase tracking-[0.2em] text-white/60 transition-colors group-hover:border-gold-light group-hover:text-gold-light">
