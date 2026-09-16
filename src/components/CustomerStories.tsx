@@ -18,16 +18,21 @@ export function pickTestimonials(
 export function CustomerStoryGrid({
   testimonials,
   revealStagger = false,
+  glass = false,
 }: {
   testimonials: AdminTestimonial[];
   revealStagger?: boolean; // homepage only: lets ScrollReveal stagger the cards in
+  glass?: boolean; // frosted cards, for use on a coloured band
 }) {
+  const card = glass
+    ? "rounded-2xl border border-white/70 bg-white/45 p-5 shadow-[0_8px_32px_rgba(18,60,48,0.10)] backdrop-blur-xl"
+    : "rounded-lg border border-beige p-4";
   return (
     <div data-reveal-stagger={revealStagger || undefined} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {testimonials.map((t) => {
         const taggedProduct = t.productSlug ? getProductBySlug(t.productSlug) : undefined;
         return (
-          <div key={t.id} className="rounded-lg border border-beige p-4">
+          <div key={t.id} className={card}>
             <div className="text-gold text-sm mb-2">{"★".repeat(t.rating)}{"☆".repeat(5 - t.rating)}</div>
             <p className="text-sm text-ink/80 leading-relaxed mb-3">{t.text}</p>
             <div className="flex items-center gap-2">
@@ -46,7 +51,7 @@ export function CustomerStoryGrid({
             {taggedProduct && (
               <Link
                 href={`/jewellery/${categoryToSlug(taggedProduct.category)}/${taggedProduct.slug}`}
-                className="mt-3 pt-3 border-t border-beige flex items-center gap-2 hover:opacity-80 transition-opacity"
+                className={"mt-3 pt-3 border-t flex items-center gap-2 hover:opacity-80 transition-opacity " + (glass ? "border-brand/10" : "border-beige")}
               >
                 <div className="relative h-10 w-10 rounded overflow-hidden shrink-0 bg-beige">
                   <Image src={taggedProduct.image} alt={taggedProduct.name} fill sizes="40px" className="object-cover" />

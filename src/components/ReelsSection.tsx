@@ -107,7 +107,7 @@ function ReelItem({
   );
 }
 
-export function ReelsSection({ reels }: { reels: AdminReel[] }) {
+export function ReelsSection({ reels, onDark = false }: { reels: AdminReel[]; onDark?: boolean }) {
   const { products } = useAdmin();
   const activeReels = reels.filter((r) => r.enabled);
   const [activeIdx, setActiveIdx] = useState(0);
@@ -244,7 +244,9 @@ export function ReelsSection({ reels }: { reels: AdminReel[] }) {
             <button
               key={i}
               onClick={() => { goTo(i); resetTimer(); }}
-              className={"rounded-full transition-all duration-300 " + (i === activeIdx ? "w-6 h-2 bg-brand" : "w-2 h-2 bg-brand/25 hover:bg-brand/50")}
+              className={"rounded-full transition-all duration-300 " + (i === activeIdx
+                  ? "w-6 h-2 " + (onDark ? "bg-gold" : "bg-brand")
+                  : "w-2 h-2 " + (onDark ? "bg-gold-light/30 hover:bg-gold-light/60" : "bg-brand/25 hover:bg-brand/50"))}
             />
           ))}
         </div>
