@@ -5,31 +5,30 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // mobileImage is a separate portrait design: banners carry their headline inside the
-// image, and a wide banner's text is too small to read on a phone.
-// Slides are never cropped. When the screen is shorter than the banner, the whole banner
-// is shown and a blurred copy of it fills the sides.
-type Slide = { image: string; href: string; alt: string; mobileImage?: string };
+// image, and a wide banner's text is too small to read on a phone. On phones the whole portrait
+// is shown (a blurred copy fills any gap). On desktop the 3:2 banner fills a full-width 19:10 frame,
+// anchored by `focus` (how far down, in %) so the headline and the jewellery both stay in view.
+type Slide = { image: string; href: string; alt: string; mobileImage?: string; focus?: number };
 
 const DESKTOP_MEDIA = "(min-width: 768px)"; // Tailwind md
 
 function SlideImage({ slide, eager }: { slide: Slide; eager: boolean }) {
   const loading = eager ? ("eager" as const) : ("lazy" as const);
   const fetchPriority = eager ? ("high" as const) : undefined;
+  const objectPosition = `50% ${slide.focus ?? 50}%`;
 
   if (!slide.mobileImage) {
     return (
-      <>
-        <Image src={slide.image} alt="" aria-hidden fill loading={loading} sizes="100vw" className="object-cover blur-2xl scale-110 opacity-80" />
-        <Image
-          src={slide.image}
-          alt={slide.alt}
-          fill
-          loading={loading}
-          fetchPriority={fetchPriority}
-          sizes="100vw"
-          className="object-contain"
-        />
-      </>
+      <Image
+        src={slide.image}
+        alt={slide.alt}
+        fill
+        loading={loading}
+        fetchPriority={fetchPriority}
+        sizes="100vw"
+        className="object-cover"
+        style={{ objectPosition }}
+      />
     );
   }
 
@@ -50,14 +49,15 @@ function SlideImage({ slide, eager }: { slide: Slide; eager: boolean }) {
         {...(decorative ? { alt: "", "aria-hidden": true, fetchPriority: undefined } : {})}
         srcSet={mobileSrcSet}
         className={"absolute inset-0 h-full w-full " + className}
+        style={decorative ? undefined : { objectPosition }}
       />
     </picture>
   );
 
   return (
     <>
-      {art("object-cover blur-2xl scale-110 opacity-80", true)}
-      {art("object-contain", false)}
+      {art("object-cover blur-2xl scale-110 opacity-80 md:hidden", true)}
+      {art("object-contain md:object-cover", false)}
     </>
   );
 }
@@ -114,8 +114,10 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
   return (
     <div
       className={
-        "relative w-full overflow-hidden bg-brand max-h-[calc(100svh-7rem)] " +
-        (hasMobileArt ? "aspect-[2/3] md:aspect-[3/2]" : "aspect-[3/2]")
+        "relative w-full overflow-hidden bg-brand " +
+        (hasMobileArt
+          ? "aspect-[2/3] max-h-[calc(100svh-7rem)] md:aspect-[19/10] md:max-h-none"
+          : "aspect-[3/2] md:aspect-[19/10]")
       }
     >
       {slides.map((slide, i) => (
@@ -126,7 +128,7 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
             "hero-slide absolute inset-0 " +
             (i === active ? "opacity-100 z-10" : "opacity-0 z-0")
           }
-          style={{ transform: i === active && entered ? "scale(1)" : "scale(1.06)" }}
+          style={{ transform: i === active && entered ? "scale(1)" : "scale(1.04)" }}
           aria-hidden={i !== active}
           tabIndex={i === active ? 0 : -1}
         >

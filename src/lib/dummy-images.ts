@@ -22,7 +22,12 @@ export const categoryBannerImages: Record<string, string> = {
 
 // Shop, category and collection pages show their banner as a slim 16:4 strip. This is how far down
 // (0 = top, 100 = bottom) to anchor each picture so its jewellery stays inside the strip.
+// The desktop hero shows its banners in a 19:10 frame (79% of the height), anchored the same way.
 export const bannerFocus: Record<string, number> = {
+  "/banners/full/hero-1-desktop.webp": 57,
+  "/banners/full/hero-2-desktop.webp": 45,
+  "/banners/full/hero-3-desktop.webp": 88,
+  "/banners/full/hero-4-desktop.webp": 76,
   "/banners/full/cat-shop.webp": 52,
   "/banners/full/cat-rings.webp": 40,
   "/banners/full/cat-earrings.webp": 48,

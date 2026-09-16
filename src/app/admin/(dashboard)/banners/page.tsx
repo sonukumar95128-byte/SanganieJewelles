@@ -39,7 +39,7 @@ export default function AdminBannersPage() {
               <div className="relative h-14 w-[84px] rounded-lg overflow-hidden bg-beige border border-beige mb-1">
                 <Image src={slide.image} alt={slide.title} fill sizes="80px" className="object-cover" />
               </div>
-              <BannerImagePicker value={slide.image} onChange={(image) => updateHeroSlide(slide.id, { image })} recommended="1536 × 1024 px · ChatGPT landscape (3:2), shown uncropped" />
+              <BannerImagePicker value={slide.image} onChange={(image) => updateHeroSlide(slide.id, { image })} recommended="1536 × 1024 px (3:2) · shown as a wide 19:10 banner, keep headline and jewellery between 11% and 89% of the height" />
             </div>
 
             <div className="shrink-0">
