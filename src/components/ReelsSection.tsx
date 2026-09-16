@@ -183,7 +183,7 @@ export function ReelsSection({ reels }: { reels: AdminReel[] }) {
               key={reel.id}
               onClick={() => { if (!isCenter) { goTo(i); resetTimer(); } }}
               className={[
-                "relative flex-shrink-0 rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer",
+                "relative flex-shrink-0 rounded-2xl overflow-hidden transition-all duration-700 ease-apple cursor-pointer",
                 isCenter
                   ? isLandscape
                     ? "w-[90%] sm:w-[70%] lg:w-[55%] opacity-100 scale-100 z-10 shadow-2xl"

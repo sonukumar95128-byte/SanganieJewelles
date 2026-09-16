@@ -91,6 +91,13 @@ function GlassArrow({
 
 export function HeroSlider({ slides }: { slides: Slide[] }) {
   const [active, setActive] = useState(0);
+  // Lets the first slide settle out of its zoom on load, like the ones that follow.
+  const [entered, setEntered] = useState(false);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   useEffect(() => {
     if (slides.length < 2) return;
@@ -116,9 +123,10 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
           key={slide.href + i}
           href={slide.href}
           className={
-            "absolute inset-0 transition-opacity duration-700 " +
+            "hero-slide absolute inset-0 " +
             (i === active ? "opacity-100 z-10" : "opacity-0 z-0")
           }
+          style={{ transform: i === active && entered ? "scale(1)" : "scale(1.06)" }}
           aria-hidden={i !== active}
           tabIndex={i === active ? 0 : -1}
         >

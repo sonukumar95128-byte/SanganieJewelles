@@ -17,7 +17,7 @@ export function CuratedProductGrid({ slugs, badge }: CuratedProductGridProps) {
     .filter((p): p is NonNullable<typeof p> => !!p);
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-stagger">
+    <div data-reveal-stagger className="grid grid-cols-2 sm:grid-cols-4 gap-4">
       {items.map((p) => (
         <ProductCard
           key={p.slug}

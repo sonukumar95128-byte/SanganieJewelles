@@ -31,7 +31,7 @@ function PriceTile({ band, index }: { band: PriceBand; index: number }) {
     <Link
       href={href}
       aria-label={`Shop jewellery ${band.label}`}
-      className="group relative block aspect-square w-full [container-type:inline-size] transition-transform duration-500 hover:-translate-y-1.5"
+      className="group relative block aspect-square w-full [container-type:inline-size] transition-transform duration-700 ease-apple hover:-translate-y-1.5"
     >
       <svg viewBox="0 0 100 100" aria-hidden className="absolute inset-0 h-full w-full drop-shadow-[0_14px_22px_rgba(18,60,48,0.28)]">
         <defs>
@@ -81,13 +81,13 @@ export function PriceTiles({ bands }: { bands: PriceBand[] }) {
       <Sparkle className="right-6 top-10 h-4 w-4 opacity-50 sm:right-[12%]" />
       <Sparkle className="bottom-6 left-[46%] hidden h-5 w-5 opacity-60 lg:block" />
 
-      <div className="relative text-center lg:text-left">
+      <div data-reveal className="relative text-center lg:text-left">
         <p className="text-xs uppercase tracking-[0.35em] text-gold">Shop by</p>
         <h2 className="mt-1 font-heading text-5xl italic text-brand sm:text-6xl">Price</h2>
         <p className="mt-2 text-sm text-ink/55">Find the perfect piece within your budget</p>
       </div>
 
-      <div className="relative mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:mt-4 lg:flex lg:items-end lg:justify-between lg:gap-4">
+      <div data-reveal-stagger="zoom" className="relative mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:mt-4 lg:flex lg:items-end lg:justify-between lg:gap-4">
         {bands.map((band, i) => (
           <div key={band.label} className={stepped[i % stepped.length]}>
             <PriceTile band={band} index={i} />

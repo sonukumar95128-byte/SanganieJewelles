@@ -76,7 +76,7 @@ export function PromoSlider({ slides }: { slides: PromoStrip[] }) {
     >
       <div className="relative overflow-hidden [--w:86%] sm:[--w:58%] lg:[--w:44%]">
         <div
-          className={"flex " + (animate ? "transition-transform duration-500 ease-out" : "")}
+          className={"flex " + (animate ? "transition-transform duration-[900ms] ease-apple" : "")}
           style={{
             gap: GAP_PX,
             transform: `translateX(calc(50% - ${pos} * (var(--w) + ${GAP_PX}px) - var(--w) / 2))`,
@@ -100,8 +100,10 @@ export function PromoSlider({ slides }: { slides: PromoStrip[] }) {
                   }
                 }}
                 className={
-                  "relative block aspect-[3/2] w-[var(--w)] flex-shrink-0 overflow-hidden rounded-2xl transition-opacity duration-300 " +
-                  (isActive ? "opacity-100" : "opacity-60")
+                  "relative block aspect-[3/2] w-[var(--w)] flex-shrink-0 overflow-hidden rounded-2xl " +
+                  // No transition during the silent recentring jump, or the swapped cards would visibly resize.
+                  (animate ? "transition duration-[900ms] ease-apple " : "") +
+                  (isActive ? "opacity-100 scale-100" : "opacity-50 scale-[0.92]")
                 }
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}

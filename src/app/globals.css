@@ -23,6 +23,7 @@
   --color-ink: var(--color-ink);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
   --font-heading: var(--font-cormorant);
   --font-sans: var(--font-montserrat);
 }
@@ -59,6 +60,62 @@ body {
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.96); }
   to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Scroll reveal ─────────────────────────────────────
+   Blocks marked data-reveal (and children of data-reveal-stagger) start hidden and glide in
+   when ScrollReveal sees them. Only applies when scripts run, so nothing stays hidden without JS. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal]:not(.reveal-done),
+  [data-reveal-stagger]:not(.reveal-done) > * {
+    transition:
+      opacity 0.9s var(--ease-apple),
+      transform 1.2s var(--ease-apple),
+      filter 0.9s var(--ease-apple);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  [data-reveal]:not(.is-revealed),
+  [data-reveal-stagger]:not(.is-revealed) > * {
+    opacity: 0;
+    transform: translate3d(0, 56px, 0);
+  }
+
+  [data-reveal="zoom"]:not(.is-revealed),
+  [data-reveal-stagger="zoom"]:not(.is-revealed) > * {
+    transform: translate3d(0, 32px, 0) scale(0.92);
+    filter: blur(6px);
+  }
+
+  [data-reveal-stagger="right"]:not(.is-revealed) > * {
+    transform: translate3d(72px, 0, 0);
+  }
+
+  /* Cards carry their own load-time fade; inside a revealed row the scroll reveal replaces it. */
+  html [data-reveal-stagger] > * {
+    animation: none;
+  }
+
+  /* Safety net: if the page script is slow to start, show everything anyway. */
+  html:not(.motion-ready) [data-reveal],
+  html:not(.motion-ready) [data-reveal-stagger] > * {
+    animation: revealFallback 0.6s ease 2.5s forwards;
+  }
+}
+
+/* Hero slides cross-fade while slowly settling out of a slight zoom (set inline as a transform). */
+.hero-slide {
+  transition:
+    opacity 1.4s var(--ease-apple),
+    transform 7s var(--ease-apple);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide { transition: opacity 0.3s ease; transform: none !important; }
+}
+
+@keyframes revealFallback {
+  to { opacity: 1; transform: none; filter: none; }
 }
 
 @keyframes reelPan {

@@ -9,6 +9,7 @@ import { PriceTiles } from "@/components/PriceTiles";
 import { PromoSlider } from "@/components/PromoSlider";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ReelsSection } from "@/components/ReelsSection";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import {
   categories,
   categoryImages as defaultCategoryImages,
@@ -172,6 +173,7 @@ export default async function Home() {
 
   return (
     <div className="space-y-16 pb-16">
+      <ScrollReveal />
       {/* Hero — full bleed slider */}
       {isOn("hero") && <HeroSlider slides={liveHeroSlides} />}
 
@@ -179,7 +181,7 @@ export default async function Home() {
         {/* Category circles */}
         {isOn("categories") && (
           <section className="overflow-x-auto [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory pb-2">
-            <div className="flex gap-6 sm:gap-10 mx-auto w-fit px-2">
+            <div data-reveal-stagger="right" className="flex gap-6 sm:gap-10 mx-auto w-fit px-2">
               {categories.map((c) => (
                 <Link key={c} href={`/jewellery/${categoryToSlug(c)}`} className="flex flex-col items-center gap-3 group shrink-0 snap-center">
                   <div className="relative h-24 w-24 sm:h-32 sm:w-32 lg:h-36 lg:w-36 rounded-full overflow-hidden ring-1 ring-beige group-hover:ring-2 group-hover:ring-gold transition-all">
@@ -201,7 +203,9 @@ export default async function Home() {
         {/* Best Sellers */}
         {isOn("best-sellers") && (
           <section>
-            <SectionHeading title="Best Sellers" subtitle="Loved and worn by thousands of customers" viewAllHref="/jewellery?sort=bestselling" />
+            <div data-reveal>
+              <SectionHeading title="Best Sellers" subtitle="Loved and worn by thousands of customers" viewAllHref="/jewellery?sort=bestselling" />
+            </div>
             <CuratedProductGrid slugs={bestSellersSlugs} badge="Bestseller" />
           </section>
         )}
@@ -212,7 +216,9 @@ export default async function Home() {
         {/* New Arrivals */}
         {isOn("new-arrivals") && (
           <section>
-            <SectionHeading title="New Arrivals" subtitle="Freshly crafted pieces, added every week" viewAllHref="/jewellery?sort=newest" />
+            <div data-reveal>
+              <SectionHeading title="New Arrivals" subtitle="Freshly crafted pieces, added every week" viewAllHref="/jewellery?sort=newest" />
+            </div>
             <CuratedProductGrid slugs={newArrivalsSlugs} />
           </section>
         )}
@@ -220,9 +226,11 @@ export default async function Home() {
         {/* Shop by Relation */}
         {isOn("shop-by-relation") && (
           <section>
-            <SectionHeading title="Shop by Relation" subtitle="Gifts for everyone you cherish" />
+            <div data-reveal>
+              <SectionHeading title="Shop by Relation" subtitle="Gifts for everyone you cherish" />
+            </div>
             <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory pb-2">
-              <div className="flex gap-6 sm:gap-10 mx-auto w-fit px-2">
+              <div data-reveal-stagger="right" className="flex gap-6 sm:gap-10 mx-auto w-fit px-2">
                 {relationShops.map((r) => (
                   <Link
                     key={r.label}
@@ -242,14 +250,20 @@ export default async function Home() {
       </div>
 
       {/* Promo slider — full bleed */}
-      {isOn("offer-banner") && <PromoSlider slides={homeSlides} />}
+      {isOn("offer-banner") && (
+        <div data-reveal>
+          <PromoSlider slides={homeSlides} />
+        </div>
+      )}
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 space-y-16">
         {/* Trending Now — shop by collection */}
         {isOn("collections") && (
           <section>
-            <SectionHeading title="Trending Now" subtitle="Curated edits for every occasion" viewAllHref="/collections" viewAllLabel="All collections" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div data-reveal>
+              <SectionHeading title="Trending Now" subtitle="Curated edits for every occasion" viewAllHref="/collections" viewAllLabel="All collections" />
+            </div>
+            <div data-reveal-stagger className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {liveCollections.map((c) => (
                 <Link key={c.id} href={`/collections/${c.slug}`} className="group">
                   <div className="relative aspect-[3/2] rounded-lg overflow-hidden">
@@ -258,7 +272,7 @@ export default async function Home() {
                       alt={c.title}
                       fill
                       sizes="33vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-700 ease-apple group-hover:scale-105"
                     />
                   </div>
                   <p className="mt-3 font-heading italic text-xl text-brand">{c.title}</p>
@@ -272,16 +286,22 @@ export default async function Home() {
         {/* Watch & Shop — video reels */}
         {isOn("reels") && reels.filter((r) => r.enabled).length > 0 && (
           <section>
-            <SectionHeading title="Watch & Shop" subtitle="Tap a reel to explore what's in it" />
-            <ReelsSection reels={reels} />
+            <div data-reveal>
+              <SectionHeading title="Watch & Shop" subtitle="Tap a reel to explore what's in it" />
+            </div>
+            <div data-reveal="zoom">
+              <ReelsSection reels={reels} />
+            </div>
           </section>
         )}
 
         {/* Customer Stories */}
         {isOn("testimonials") && (
           <section>
-            <SectionHeading title="Customer Stories" subtitle="★ 4.8 average · 12,400+ verified reviews" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div data-reveal>
+              <SectionHeading title="Customer Stories" subtitle="★ 4.8 average · 12,400+ verified reviews" />
+            </div>
+            <div data-reveal-stagger className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {liveTestimonials.map((t) => {
                 const taggedProduct = t.productSlug ? getProductBySlug(t.productSlug) : undefined;
                 return (
@@ -327,7 +347,7 @@ export default async function Home() {
 
         {/* Our Promise — trust badges */}
         {isOn("trust-badges") && (
-          <section className="grid grid-cols-2 sm:grid-cols-4 gap-6 rounded-xl bg-brand py-10 px-4">
+          <section data-reveal-stagger className="grid grid-cols-2 sm:grid-cols-4 gap-6 rounded-xl bg-brand py-10 px-4">
             {trustBadges.filter((b) => b.enabled).map((b) => (
               <div key={b.id} className="flex flex-col items-center text-center gap-2">
                 <span className="grid h-12 w-12 place-items-center rounded-full border border-gold/40 text-xl text-gold-light">{b.icon}</span>
