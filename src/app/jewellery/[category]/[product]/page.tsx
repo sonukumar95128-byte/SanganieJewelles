@@ -15,11 +15,12 @@ import {
   dummyProducts,
   getCategoryTags,
   getProductBySlug,
+  hoverImageFor,
   slugToCategory,
   styleTags,
 } from "@/lib/dummy-images";
 
-// Render dynamically on demand — avoids pre-building all 196 product pages during
+// Render dynamically on demand — avoids pre-building all 390 product pages during
 // deployment, which uses too much memory on Hostinger's server.
 export const dynamic = "force-dynamic";
 
@@ -121,7 +122,7 @@ export default async function ProductDetailPage({
                 key={p.slug}
                 slug={p.slug}
                 image={p.image}
-                hoverImage={p.gallery && p.gallery.length > 1 ? p.gallery[p.gallery.length - 1] : undefined}
+                hoverImage={hoverImageFor(p)}
                 name={p.name}
                 price={p.price}
                 href={`/jewellery/${categoryToSlug(p.category)}/${p.slug}`}

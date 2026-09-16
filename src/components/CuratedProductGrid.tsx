@@ -2,7 +2,7 @@
 
 import { ProductCard } from "@/components/ProductCard";
 import { useAdmin } from "@/lib/admin-store";
-import { categoryToSlug } from "@/lib/dummy-images";
+import { categoryToSlug, hoverImageFor } from "@/lib/dummy-images";
 
 type CuratedProductGridProps = {
   slugs: string[];
@@ -23,7 +23,7 @@ export function CuratedProductGrid({ slugs, badge }: CuratedProductGridProps) {
           key={p.slug}
           slug={p.slug}
           image={p.image}
-          hoverImage={p.gallery && p.gallery.length > 1 ? p.gallery[p.gallery.length - 1] : undefined}
+          hoverImage={hoverImageFor(p)}
           name={p.name}
           price={p.price}
           badge={badge}

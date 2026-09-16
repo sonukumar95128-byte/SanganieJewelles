@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Dropdown } from "@/components/Dropdown";
 import { FilterSidebar } from "@/components/FilterSidebar";
 import { InfiniteProductGrid } from "@/components/InfiniteProductGrid";
-import { bannerFocus, getPriceRange, type DummyProduct } from "@/lib/dummy-images";
+import { bannerFocus, getPriceRange, mixByCategory, type DummyProduct } from "@/lib/dummy-images";
 import { useAdmin } from "@/lib/admin-store";
 import { applyFilters, countActive, parseFilters } from "@/lib/product-filters";
 
@@ -47,12 +47,15 @@ function CategoryListingContent({ title, pageId, fallbackBanner, products, activ
   const filteredProducts = applyFilters(products, filters);
 
   const toNum = (p: string) => Number(p.replace(/[^0-9.]/g, ""));
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sort === "price-asc") return toNum(a.price) - toNum(b.price);
-    if (sort === "price-desc") return toNum(b.price) - toNum(a.price);
-    if (sort === "bestselling") return b.rating - a.rating;
-    return 0; // newest = original order
-  });
+  // Newest: most recently added first, with categories spread through the list.
+  const sortedProducts =
+    sort === "newest"
+      ? mixByCategory([...filteredProducts].reverse())
+      : [...filteredProducts].sort((a, b) => {
+          if (sort === "price-asc") return toNum(a.price) - toNum(b.price);
+          if (sort === "price-desc") return toNum(b.price) - toNum(a.price);
+          return b.rating - a.rating; // bestselling
+        });
 
   return (
     <div>

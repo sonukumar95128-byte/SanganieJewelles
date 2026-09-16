@@ -196,6 +196,7 @@ export type DummyProduct = {
   originalPrice?: string;
   image: string;
   gallery: string[];
+  hoverImage?: string;
   category: Category;
   stock: number;
   rating: number;
@@ -216,6 +217,7 @@ export const dummyProducts: DummyProduct[] = realProducts.map((p) => ({
   originalPrice: p.originalPrice,
   image: p.image,
   gallery: p.gallery,
+  hoverImage: p.hoverImage,
   category: p.category,
   stock: p.stock,
   rating: p.rating,
@@ -223,6 +225,55 @@ export const dummyProducts: DummyProduct[] = realProducts.map((p) => ({
   description: p.description,
   attributes: p.attributes,
 }));
+
+// The photo a product card switches to on hover: the on-model shot when there is one, otherwise the last photo.
+export function hoverImageFor(p: { hoverImage?: string; gallery?: string[] }): string | undefined {
+  if (p.hoverImage) return p.hoverImage;
+  return p.gallery && p.gallery.length > 1 ? p.gallery[p.gallery.length - 1] : undefined;
+}
+
+// Spreads each category evenly through the list (keeping each category's own order), so neighbouring
+// cards come from different categories instead of 146 rings in a row.
+export function mixByCategory<T extends { category: string }>(items: T[]): T[] {
+  const totals = new Map<string, number>();
+  for (const item of items) totals.set(item.category, (totals.get(item.category) ?? 0) + 1);
+  const seen = new Map<string, number>();
+  return items
+    .map((item, index) => {
+      const n = seen.get(item.category) ?? 0;
+      seen.set(item.category, n + 1);
+      return { item, index, key: (n + 0.5) / totals.get(item.category)! };
+    })
+    .sort((a, b) => a.key - b.key || a.index - b.index)
+    .map((entry) => entry.item);
+}
+
+// Takes one piece from each category in turn (in `ranked` order within a category), preferring pieces
+// with an on-model photo so the homepage cards have something to show on hover.
+function pickAcrossCategories(ranked: DummyProduct[], count: number, exclude: string[] = []): string[] {
+  const pool = ranked.filter((p) => !exclude.includes(p.slug));
+  const queues = categories.map((c) => {
+    const inCategory = pool.filter((p) => p.category === c);
+    return [...inCategory.filter((p) => p.hoverImage), ...inCategory.filter((p) => !p.hoverImage)];
+  });
+  const picked: string[] = [];
+  for (let round = 0; picked.length < count && queues.some((q) => q.length > round); round++) {
+    for (const queue of queues) {
+      if (picked.length < count && queue[round]) picked.push(queue[round].slug);
+    }
+  }
+  return picked;
+}
+
+// Homepage defaults: New Arrivals are the most recently added pieces, Best Sellers the most reviewed.
+// Both show every category and never repeat each other.
+export const newArrivalSlugs: string[] = pickAcrossCategories([...dummyProducts].reverse(), 8);
+
+export const bestSellerSlugs: string[] = pickAcrossCategories(
+  [...dummyProducts].sort((a, b) => b.rating * b.reviewCount - a.rating * a.reviewCount),
+  8,
+  newArrivalSlugs,
+);
 
 export function getProductBySlug(slug: string): DummyProduct | undefined {
   return dummyProducts.find((p) => p.slug === slug);

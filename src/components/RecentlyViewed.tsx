@@ -1,7 +1,7 @@
 "use client";
 
 import { ProductCard } from "@/components/ProductCard";
-import { categoryToSlug, dummyProducts } from "@/lib/dummy-images";
+import { categoryToSlug, dummyProducts, hoverImageFor } from "@/lib/dummy-images";
 import { useRecentlyViewed } from "@/lib/recently-viewed-store";
 import { useAdmin } from "@/lib/admin-store";
 
@@ -25,7 +25,7 @@ export function RecentlyViewed({ excludeSlug }: { excludeSlug?: string }) {
             key={p.slug}
             slug={p.slug}
             image={p.image}
-            hoverImage={p.gallery && p.gallery.length > 1 ? p.gallery[p.gallery.length - 1] : undefined}
+            hoverImage={hoverImageFor(p)}
             name={p.name}
             price={p.price}
             href={`/jewellery/${categoryToSlug(p.category)}/${p.slug}`}

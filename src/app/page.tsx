@@ -21,6 +21,8 @@ import {
   promoBanners,
   priceBands,
   bannerFocus,
+  newArrivalSlugs,
+  bestSellerSlugs,
   reelDefaults,
   relationShops,
   getProductBySlug,
@@ -157,8 +159,8 @@ export default async function Home() {
   const reels: AdminReel[] = (db.reels as AdminReel[]) ?? defaultReels;
   const trustBadges: TrustBadge[] = (db.trustBadges as TrustBadge[]) ?? defaultTrustBadges;
   const catImages: Record<string, string> = (db.categoryImages as Record<string, string>) ?? {};
-  const newArrivalsSlugs: string[] = (db.newArrivals as string[]) ?? dummyProducts.slice(0, 8).map((p) => p.slug);
-  const bestSellersSlugs: string[] = (db.bestSellers as string[]) ?? dummyProducts.slice(8, 16).map((p) => p.slug);
+  const newArrivalsSlugs: string[] = (db.newArrivals as string[]) ?? newArrivalSlugs;
+  const bestSellersSlugs: string[] = (db.bestSellers as string[]) ?? bestSellerSlugs;
 
   // Derived
   const liveHeroSlides = heroSlidesAdmin

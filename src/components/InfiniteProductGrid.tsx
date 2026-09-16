@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
-import { categoryToSlug, type DummyProduct } from "@/lib/dummy-images";
+import { categoryToSlug, hoverImageFor, type DummyProduct } from "@/lib/dummy-images";
 
 const BATCH_SIZE = 12;
 
@@ -45,7 +45,7 @@ export function InfiniteProductGrid({ products }: { products: DummyProduct[] }) 
             key={p.slug}
             slug={p.slug}
             image={p.image}
-            hoverImage={p.gallery && p.gallery.length > 1 ? p.gallery[p.gallery.length - 1] : undefined}
+            hoverImage={hoverImageFor(p)}
             name={p.name}
             price={p.price}
             href={`/jewellery/${categoryToSlug(p.category)}/${p.slug}`}

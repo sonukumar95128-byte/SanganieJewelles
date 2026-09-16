@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/ProductCard";
-import { categoryToSlug, dummyProducts } from "@/lib/dummy-images";
+import { categoryToSlug, dummyProducts, hoverImageFor } from "@/lib/dummy-images";
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -63,7 +63,7 @@ function SearchContent() {
             key={p.slug}
             slug={p.slug}
             image={p.image}
-            hoverImage={p.gallery && p.gallery.length > 1 ? p.gallery[p.gallery.length - 1] : undefined}
+            hoverImage={hoverImageFor(p)}
             name={p.name}
             price={p.price}
             href={`/jewellery/${categoryToSlug(p.category)}/${p.slug}`}

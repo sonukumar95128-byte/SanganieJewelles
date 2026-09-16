@@ -12,6 +12,8 @@ import {
   productImages,
   promoImage,
   reelDefaults,
+  newArrivalSlugs,
+  bestSellerSlugs,
   slugify,
   type Category,
   type DummyProduct,
@@ -138,7 +140,8 @@ export type SiteSettings = {
 
 // v3: bumped after setting all stock to 50 (was 1 each from the CSV).
 // Changing this key invalidates any stale browser cache from before that change.
-const PRODUCTS_KEY = "sanganie-admin-products-v4";
+// v5: Photo Club 2 added (390 products) and on-model hover photos.
+const PRODUCTS_KEY = "sanganie-admin-products-v5";
 // v2: bumped after removing the 5 sample/dummy orders.
 const ORDERS_KEY = "sanganie-admin-orders-v2";
 // v2: bumped after adding manageHref links to sections.
@@ -152,8 +155,9 @@ const COLLECTIONS_KEY = "sanganie-admin-collections-v4";
 const COUPONS_KEY = "sanganie-admin-coupons";
 const SETTINGS_KEY = "sanganie-admin-settings";
 const PRODUCT_REVIEWS_KEY = "sanganie-product-reviews";
-const NEW_ARRIVALS_KEY = "sanganie-admin-new-arrivals";
-const BEST_SELLERS_KEY = "sanganie-admin-best-sellers";
+// v2: defaults now mixed across categories.
+const NEW_ARRIVALS_KEY = "sanganie-admin-new-arrivals-v2";
+const BEST_SELLERS_KEY = "sanganie-admin-best-sellers-v2";
 const CATEGORY_IMAGES_KEY = "sanganie-admin-category-images";
 const PAGE_BANNERS_KEY = "sanganie-admin-page-banners-v3";
 // v2: seeded with default reels instead of an empty list.
@@ -285,8 +289,8 @@ const seedCoupons: AdminCoupon[] = [
 ];
 
 // Defaults when the admin hasn't picked a manual selection yet — first 8 vs next 8 products.
-const seedNewArrivals: string[] = dummyProducts.slice(0, 8).map((p) => p.slug);
-const seedBestSellers: string[] = dummyProducts.slice(8, 16).map((p) => p.slug);
+const seedNewArrivals: string[] = newArrivalSlugs;
+const seedBestSellers: string[] = bestSellerSlugs;
 
 const seedSettings: SiteSettings = {
   goldRatePerGram: 7128,
