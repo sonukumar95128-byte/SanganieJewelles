@@ -130,6 +130,13 @@ body {
   .animate-trust-ticker { animation: none; }
 }
 
+/* Category and relation circles on phones: the same one-copy slide, endlessly. */
+.animate-marquee { animation: trustTicker 20s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}
+
 @keyframes reelPan {
   from { object-position: 100% 50%; }
   to   { object-position: 0% 50%; }

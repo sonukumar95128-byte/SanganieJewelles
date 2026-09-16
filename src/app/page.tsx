@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { getPrisma } from "@/lib/prisma";
+import { CircleRow } from "@/components/CircleRow";
 import { CuratedProductGrid } from "@/components/CuratedProductGrid";
 import { CustomerStoryGrid, pickTestimonials } from "@/components/CustomerStories";
 import { HeroSlider } from "@/components/HeroSlider";
@@ -189,26 +190,17 @@ export default async function Home() {
             <div data-reveal>
               <SectionHeading title="Shop by Category" subtitle="Find your favourite in every style" viewAllHref="/jewellery" viewAllLabel="Shop all" />
             </div>
-            <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory py-3">
-              <div data-reveal-stagger="right" className="flex gap-6 sm:gap-10 mx-auto w-fit px-2">
-                {categories.map((c) => (
-                  <Link key={c} href={`/jewellery/${categoryToSlug(c)}`} className="flex flex-col items-center gap-3 group shrink-0 snap-center">
-                    <div className="rounded-full border border-white/70 bg-white/40 p-1.5 shadow-[0_8px_24px_rgba(18,60,48,0.12)] backdrop-blur-md transition-all duration-500 ease-apple group-hover:border-gold/70 group-hover:shadow-[0_10px_30px_rgba(201,162,39,0.28)]">
-                      <div className="relative h-24 w-24 sm:h-32 sm:w-32 lg:h-36 lg:w-36 rounded-full overflow-hidden">
-                        <Image
-                          src={catImages[c] || defaultCategoryImages[c] || ""}
-                          alt={c}
-                          fill
-                          sizes="(min-width:1024px) 144px, (min-width:640px) 128px, 96px"
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                    <span className="text-sm sm:text-base text-ink/80">{c}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <CircleRow
+              items={categories.map((c) => ({
+                key: c,
+                href: `/jewellery/${categoryToSlug(c)}`,
+                label: c,
+                image: catImages[c] || defaultCategoryImages[c] || "",
+              }))}
+              circleClass="h-24 w-24 sm:h-32 sm:w-32 lg:h-36 lg:w-36"
+              sizes="(min-width:1024px) 144px, (min-width:640px) 128px, 96px"
+              revealStagger
+            />
           </section>
         </SectionBand>
       )}
@@ -243,24 +235,17 @@ export default async function Home() {
             <div data-reveal>
               <SectionHeading title="Shop by Relation" subtitle="Gifts for everyone you cherish" />
             </div>
-            <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory py-3">
-              <div data-reveal-stagger="right" className="flex gap-6 sm:gap-10 mx-auto w-fit px-2">
-                {relationShops.map((r) => (
-                  <Link
-                    key={r.label}
-                    href={`/jewellery?category=${r.categories.map(categoryToSlug).join(",")}`}
-                    className="flex flex-col items-center gap-3 group shrink-0 snap-center"
-                  >
-                    <div className="rounded-full border border-white/70 bg-white/40 p-1.5 shadow-[0_8px_24px_rgba(18,60,48,0.12)] backdrop-blur-md transition-all duration-500 ease-apple group-hover:border-gold/70 group-hover:shadow-[0_10px_30px_rgba(201,162,39,0.28)]">
-                      <div className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-full overflow-hidden">
-                        <Image src={r.image} alt={r.label} fill sizes="(min-width:640px) 128px, 96px" className="object-cover" />
-                      </div>
-                    </div>
-                    <span className="text-sm sm:text-base text-ink/80">{r.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <CircleRow
+              items={relationShops.map((r) => ({
+                key: r.label,
+                href: `/jewellery?category=${r.categories.map(categoryToSlug).join(",")}`,
+                label: r.label,
+                image: r.image,
+              }))}
+              circleClass="h-24 w-24 sm:h-32 sm:w-32"
+              sizes="(min-width:640px) 128px, 96px"
+              revealStagger
+            />
           </section>
         </SectionBand>
       )}
