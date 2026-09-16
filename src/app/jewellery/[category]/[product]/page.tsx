@@ -98,8 +98,6 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      <ProductTrustBadges />
-
       <div className="mt-12">
         <ProductTabs
           productSlug={product.slug}
@@ -110,8 +108,6 @@ export default async function ProductDetailPage({
         />
         <ProductTags categoryTags={getCategoryTags(category)} tags={styleTags} />
       </div>
-
-      <ProductCustomerStories productSlug={product.slug} />
 
       <TrackRecentlyViewed slug={product.slug} />
       <ProductPagePromo />
@@ -136,6 +132,9 @@ export default async function ProductDetailPage({
           </div>
         </div>
       )}
+
+      <ProductCustomerStories productSlug={product.slug} />
+      <ProductTrustBadges />
     </div>
   );
 }
