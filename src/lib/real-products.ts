@@ -2321,8 +2321,8 @@ export const realProducts: RealProduct[] = [
   },
   {
     "sku": "ANT00082",
-    "name": "Yellow Gold Diamond Necklace",
-    "slug": "yellow-gold-diamond-necklace-ant00082",
+    "name": "Yellow Gold Diamond Nose Ring",
+    "slug": "yellow-gold-diamond-nose-ring-ant00082",
     "price": "₹36,501",
     "originalPrice": "₹40,799",
     "image": "https://res.cloudinary.com/sbj4xmfv/image/upload/ANT00082-1.webp",
@@ -2332,7 +2332,7 @@ export const realProducts: RealProduct[] = [
       "https://res.cloudinary.com/sbj4xmfv/image/upload/ANT00082-3.webp"
     ],
     "hoverImage": "https://res.cloudinary.com/sbj4xmfv/image/upload/ANT00082-3.webp",
-    "category": "Necklaces",
+    "category": "Nose Pins",
     "stock": 50,
     "rating": 4.7,
     "reviewCount": 46,
@@ -8610,8 +8610,8 @@ export const realProducts: RealProduct[] = [
   },
   {
     "sku": "AN000",
-    "name": "Yellow Gold Diamond Necklace",
-    "slug": "yellow-gold-diamond-necklace-an000",
+    "name": "Yellow Gold Diamond Nose Pin",
+    "slug": "yellow-gold-diamond-nose-pin-an000",
     "price": "₹15,330",
     "originalPrice": "₹19,200",
     "image": "https://res.cloudinary.com/sbj4xmfv/image/upload/AN000-1.webp",
@@ -8619,7 +8619,7 @@ export const realProducts: RealProduct[] = [
       "https://res.cloudinary.com/sbj4xmfv/image/upload/AN000-1.webp",
       "https://res.cloudinary.com/sbj4xmfv/image/upload/AN000-2.webp"
     ],
-    "category": "Necklaces",
+    "category": "Nose Pins",
     "stock": 37,
     "rating": 4.7,
     "reviewCount": 68,

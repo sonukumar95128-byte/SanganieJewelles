@@ -141,7 +141,8 @@ export type SiteSettings = {
 // v3: bumped after setting all stock to 50 (was 1 each from the CSV).
 // Changing this key invalidates any stale browser cache from before that change.
 // v5: Photo Club 2 added (390 products) and on-model hover photos.
-const PRODUCTS_KEY = "sanganie-admin-products-v5";
+// v6: two nose pieces moved out of Necklaces.
+const PRODUCTS_KEY = "sanganie-admin-products-v6";
 // v2: bumped after removing the 5 sample/dummy orders.
 const ORDERS_KEY = "sanganie-admin-orders-v2";
 // v2: bumped after adding manageHref links to sections.
