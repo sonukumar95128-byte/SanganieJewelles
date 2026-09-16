@@ -56,11 +56,19 @@ function CategoryListingContent({ title, pageId, fallbackBanner, products, activ
 
   return (
     <div>
-      {/* Banner — full bleed */}
-      <section className="relative aspect-[16/4] w-full overflow-hidden flex items-center justify-center">
-        <Image src={bannerImage} alt={title} fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0 bg-brand/45" />
-        <h1 className="relative z-10 font-heading italic text-3xl sm:text-4xl text-white">{title}</h1>
+      {/* Banner — the whole 3:2 picture, never cropped. Title sits beside it on desktop, over it on phones. */}
+      <section className="bg-brand">
+        <div className="relative mx-auto max-w-7xl md:grid md:grid-cols-2 md:items-center">
+          <div className="relative aspect-[3/2] md:order-2">
+            <Image src={bannerImage} alt={title} fill loading="eager" fetchPriority="high" sizes="(min-width:1280px) 640px, (min-width:768px) 50vw, 100vw" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-r from-brand/70 via-brand/25 to-transparent md:hidden" />
+          </div>
+          <div className="absolute inset-y-0 left-0 flex flex-col justify-center px-5 md:static md:px-12 lg:px-16 md:py-10">
+            <p className="hidden md:block text-xs uppercase tracking-[0.3em] text-gold-light">Sanganie Jewells</p>
+            <h1 className="font-heading italic text-3xl text-white drop-shadow md:mt-3 md:text-5xl md:drop-shadow-none">{title}</h1>
+            <p className="mt-2 text-xs text-white/80 md:mt-4 md:text-sm md:text-white/60">{products.length} pieces</p>
+          </div>
+        </div>
       </section>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">

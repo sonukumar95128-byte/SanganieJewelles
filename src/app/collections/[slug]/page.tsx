@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { CategoryListing } from "@/components/CategoryListing";
 import { useAdmin } from "@/lib/admin-store";
-import { collectionBannerImages, dummyProducts } from "@/lib/dummy-images";
+import { dummyProducts } from "@/lib/dummy-images";
 
 export default function CollectionDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -20,5 +20,5 @@ export default function CollectionDetailPage() {
 
   const products = dummyProducts.filter((p) => collection.productSlugs.includes(p.slug));
 
-  return <CategoryListing title={collection.title} pageId={`collection-${slug}`} fallbackBanner={collectionBannerImages[slug] ?? collection.image} products={products} />;
+  return <CategoryListing title={collection.title} pageId={`collection-${slug}`} fallbackBanner={collection.image} products={products} />;
 }

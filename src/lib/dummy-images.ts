@@ -12,67 +12,71 @@ export const categoryImages: Record<string, string> = {
 };
 
 export const categoryBannerImages: Record<string, string> = {
-  Rings: "/banners/cat-rings.webp",
-  Earrings: "/banners/cat-earrings.webp",
-  Necklaces: "/banners/cat-necklaces.webp",
-  Bracelets: "/banners/cat-bracelets.webp",
-  Pendants: "/banners/cat-pendants.webp",
-  "Nose Pins": "/banners/cat-nosepins.webp",
+  Rings: "/banners/full/cat-rings.webp",
+  Earrings: "/banners/full/cat-earrings.webp",
+  Necklaces: "/banners/full/cat-necklaces.webp",
+  Bracelets: "/banners/full/cat-bracelets.webp",
+  Pendants: "/banners/full/cat-pendants.webp",
+  "Nose Pins": "/banners/full/cat-nosepins.webp",
 };
 
-export const heroImage = "/banners/hero-1-desktop.webp";
+export const heroImage = "/banners/full/hero-1-desktop.webp";
 
-// Headlines are drawn into these images, so each slide has a separate portrait version for phones.
+// Banners ship uncropped at ChatGPT's own sizes: 1536×1024 (3:2), and 1024×1536 (2:3) for phones.
+// Headlines are drawn into the hero images, so each slide has a separate portrait version for phones.
 export const heroSlides: { image: string; mobileImage?: string; href: string; alt: string }[] = [
   {
-    image: "/banners/hero-1-desktop.webp",
-    mobileImage: "/banners/hero-1-mobile.webp",
+    image: "/banners/full/hero-1-desktop.webp",
+    mobileImage: "/banners/full/hero-1-mobile.webp",
     href: "/jewellery/pendants",
     alt: "Elegance in every hue — pendant collection",
   },
   {
-    image: "/banners/hero-2-desktop.webp",
-    mobileImage: "/banners/hero-2-mobile.webp",
+    image: "/banners/full/hero-2-desktop.webp",
+    mobileImage: "/banners/full/hero-2-mobile.webp",
     href: "/jewellery/earrings",
     alt: "Grace in every detail — earring collection",
   },
   {
-    image: "/banners/hero-3-desktop.webp",
-    mobileImage: "/banners/hero-3-mobile.webp",
+    image: "/banners/full/hero-3-desktop.webp",
+    mobileImage: "/banners/full/hero-3-mobile.webp",
     href: "/jewellery/necklaces",
     alt: "Timeless grace — mangalsutra collection",
   },
   {
-    image: "/banners/hero-4-desktop.webp",
-    mobileImage: "/banners/hero-4-mobile.webp",
+    image: "/banners/full/hero-4-desktop.webp",
+    mobileImage: "/banners/full/hero-4-mobile.webp",
     href: "/jewellery",
     alt: "Every piece certified — hallmarked gold and certified diamonds",
   },
 ];
 
-export const promoImage = "/banners/cat-shop.webp";
+export const promoImage = "/banners/full/cat-shop.webp";
+
+// "Watch & Shop" stand-ins until real reel videos are uploaded: each slowly pans across a
+// scene banner and tags the catalog piece shown in it.
+export const reelDefaults: { id: string; title: string; image: string; productSlug: string }[] = [
+  { id: "reel-1", title: "Everyday light necklace", image: "/banners/full/collection-everyday-light.webp", productSlug: "rose-gold-diamond-necklace-ans00182" },
+  { id: "reel-2", title: "Emerald bow ring", image: "/banners/full/promo-3.webp", productSlug: "rose-gold-diamond-ring-alr00809" },
+  { id: "reel-3", title: "Rose gold hoops", image: "/banners/full/product-page.webp", productSlug: "rose-gold-diamond-earrings-aps00275e" },
+  { id: "reel-4", title: "Heart studs", image: "/banners/full/cat-earrings.webp", productSlug: "yellow-gold-diamond-earrings-aps00332e" },
+  { id: "reel-5", title: "Diamond nose pin", image: "/banners/full/cat-nosepins.webp", productSlug: "yellow-gold-diamond-nose-pin-anp00063" },
+];
 
 export const collectionImages: Record<string, string> = {
-  Bridal: "/banners/collection-bridal.webp",
-  "Everyday Light": "/banners/collection-everyday-light.webp",
-  Gifting: "/banners/collection-gifting.webp",
-};
-
-// Slim header strips for each collection page, cropped separately so the piece stays in frame.
-export const collectionBannerImages: Record<string, string> = {
-  bridal: "/banners/collection-bridal-header.webp",
-  "everyday-light": "/banners/collection-everyday-light-header.webp",
-  gifting: "/banners/collection-gifting-header.webp",
+  Bridal: "/banners/full/collection-bridal.webp",
+  "Everyday Light": "/banners/full/collection-everyday-light.webp",
+  Gifting: "/banners/full/collection-gifting.webp",
 };
 
 // Homepage offer slider and the product-page strip. The site prints each title over the image.
 export const promoBanners = {
   homepage: [
-    { id: "promo-slide-1", title: "New Collection — Explore Now", link: "/jewellery/necklaces", image: "/banners/promo-1.webp" },
-    { id: "promo-slide-2", title: "Festive Sale — Flat 20% Off", link: "/jewellery/pendants", image: "/banners/promo-2.webp" },
-    { id: "promo-slide-3", title: "Buy 2, Get Free Gold Polish", link: "/jewellery/rings", image: "/banners/promo-3.webp" },
+    { id: "promo-slide-1", title: "New Collection — Explore Now", link: "/jewellery/necklaces", image: "/banners/full/promo-1.webp" },
+    { id: "promo-slide-2", title: "Festive Sale — Flat 20% Off", link: "/jewellery/pendants", image: "/banners/full/promo-2.webp" },
+    { id: "promo-slide-3", title: "Buy 2, Get Free Gold Polish", link: "/jewellery/rings", image: "/banners/full/promo-3.webp" },
   ],
-  productPage: { id: "product-page", title: "Buy 2, get free gold polish", link: "/jewellery", image: "/banners/product-page.webp" },
+  productPage: { id: "product-page", title: "Buy 2, get free gold polish", link: "/jewellery", image: "/banners/full/product-page.webp" },
 };
 
 export const productImages = [
@@ -136,16 +140,17 @@ export function slugToCategory(slug: string): Category | undefined {
 // "Shop by Price" homepage bands — tuned to the real catalog's price spread (₹6.5k–₹67k).
 export type PriceBand = {
   label: string;
+  kicker: string; // small line above the amount on the price tile
+  amount: string;
   minPrice: number;
   maxPrice?: number;
-  image: string;
 };
 
 export const priceBands: PriceBand[] = [
-  { label: "Under ₹15,000", minPrice: 0, maxPrice: 15000, image: categoryImages["Nose Pins"] },
-  { label: "₹15,000 – ₹25,000", minPrice: 15000, maxPrice: 25000, image: categoryImages.Earrings },
-  { label: "₹25,000 – ₹40,000", minPrice: 25000, maxPrice: 40000, image: categoryImages.Necklaces },
-  { label: "Above ₹40,000", minPrice: 40000, image: categoryImages.Pendants },
+  { label: "Under ₹15,000", kicker: "Under", amount: "₹15,000", minPrice: 0, maxPrice: 15000 },
+  { label: "₹15,000 – ₹25,000", kicker: "₹15,000 to", amount: "₹25,000", minPrice: 15000, maxPrice: 25000 },
+  { label: "₹25,000 – ₹40,000", kicker: "₹25,000 to", amount: "₹40,000", minPrice: 25000, maxPrice: 40000 },
+  { label: "Above ₹40,000", kicker: "Above", amount: "₹40,000", minPrice: 40000 },
 ];
 
 // "Shop by Relation" homepage cards — links reuse the existing /jewellery?category=slug1,slug2 filter.

@@ -84,6 +84,21 @@ function ReelItem({
     );
   }
 
+  if (reel.thumbnail) {
+    // Picture-only reel: a slow pan across the image stands in until a video is uploaded.
+    return (
+      <div className="relative h-full w-full overflow-hidden bg-black">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={reel.thumbnail}
+          alt={reel.title || "Reel"}
+          loading="lazy"
+          className={"h-full w-full object-cover " + (isCenter ? "animate-reel-pan" : "object-center")}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="h-full w-full bg-brand/10 flex flex-col items-center justify-center text-ink/30 gap-2">
       <span className="text-4xl">🎬</span>
@@ -138,6 +153,13 @@ export function ReelsSection({ reels }: { reels: AdminReel[] }) {
   if (count === 0) return null;
 
   const currentFormat = activeReels[activeIdx]?.format ?? "portrait";
+  // Draw previous, current, next in that order so the current reel stays in the middle when the loop wraps.
+  const visible =
+    count >= 3
+      ? [(activeIdx - 1 + count) % count, activeIdx, (activeIdx + 1) % count]
+      : count === 2
+        ? [(activeIdx + 1) % count, activeIdx]
+        : [activeIdx];
   const isLandscape = currentFormat === "landscape";
 
   return (
@@ -149,13 +171,9 @@ export function ReelsSection({ reels }: { reels: AdminReel[] }) {
         onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
         onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX)}
       >
-        {activeReels.map((reel, i) => {
+        {visible.map((i) => {
+          const reel = activeReels[i];
           const isCenter = i === activeIdx;
-          const isAdjacent =
-            Math.abs(i - activeIdx) === 1 ||
-            (activeIdx === 0 && i === count - 1) ||
-            (activeIdx === count - 1 && i === 0);
-          if (!isCenter && !isAdjacent) return null;
 
           const fmt = reel.format ?? "portrait";
           const aspectRatio = fmt === "landscape" ? "16/9" : "9/16";

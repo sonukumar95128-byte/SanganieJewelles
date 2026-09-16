@@ -17,7 +17,7 @@ export default function CollectionsIndexPage() {
           <Link
             key={c.id}
             href={`/collections/${c.slug}`}
-            className="relative aspect-[4/3] rounded-lg overflow-hidden flex items-end p-4"
+            className="relative aspect-[3/2] rounded-lg overflow-hidden flex items-end p-4"
           >
             <Image src={c.image} alt={c.title} fill sizes="33vw" className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-brand/70 to-transparent" />

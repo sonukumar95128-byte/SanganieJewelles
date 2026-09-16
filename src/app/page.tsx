@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getPrisma } from "@/lib/prisma";
 import { CuratedProductGrid } from "@/components/CuratedProductGrid";
 import { HeroSlider } from "@/components/HeroSlider";
+import { PriceTiles } from "@/components/PriceTiles";
 import { PromoSlider } from "@/components/PromoSlider";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ReelsSection } from "@/components/ReelsSection";
@@ -18,6 +19,7 @@ import {
   collectionImages,
   promoBanners,
   priceBands,
+  reelDefaults,
   relationShops,
   getProductBySlug,
 } from "@/lib/dummy-images";
@@ -91,6 +93,16 @@ const defaultCollections: AdminCollection[] = [
   },
 ];
 
+const defaultReels: AdminReel[] = reelDefaults.map((r) => ({
+  id: r.id,
+  title: r.title,
+  videoUrl: "",
+  thumbnail: r.image,
+  enabled: true,
+  format: "portrait",
+  productSlug: r.productSlug,
+}));
+
 const defaultTestimonials: AdminTestimonial[] = dummyTestimonials.map((t, i) => ({
   id: `testimonial-${i + 1}`,
   name: t.name,
@@ -140,7 +152,7 @@ export default async function Home() {
   // Content
   const collections: AdminCollection[] = (db.collections as AdminCollection[]) ?? defaultCollections;
   const testimonials: AdminTestimonial[] = (db.testimonials as AdminTestimonial[]) ?? defaultTestimonials;
-  const reels: AdminReel[] = (db.reels as AdminReel[]) ?? [];
+  const reels: AdminReel[] = (db.reels as AdminReel[]) ?? defaultReels;
   const trustBadges: TrustBadge[] = (db.trustBadges as TrustBadge[]) ?? defaultTrustBadges;
   const catImages: Record<string, string> = (db.categoryImages as Record<string, string>) ?? {};
   const newArrivalsSlugs: string[] = (db.newArrivals as string[]) ?? dummyProducts.slice(0, 8).map((p) => p.slug);
@@ -195,30 +207,7 @@ export default async function Home() {
         )}
 
         {/* Shop by Price */}
-        {isOn("shop-by-price") && (
-          <section>
-            <SectionHeading title="Shop by Price" subtitle="Find the perfect piece within your budget" />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {priceBands.map((band) => (
-                <Link
-                  key={band.label}
-                  href={`/jewellery?minPrice=${band.minPrice}${band.maxPrice ? `&maxPrice=${band.maxPrice}` : ""}`}
-                  className="group relative aspect-square rounded-lg overflow-hidden flex items-end p-3"
-                >
-                  <Image
-                    src={band.image}
-                    alt={band.label}
-                    fill
-                    sizes="(min-width:640px) 25vw, 50vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand/70 to-transparent" />
-                  <span className="relative z-10 text-sm sm:text-base font-medium text-white">{band.label}</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+        {isOn("shop-by-price") && <PriceTiles bands={priceBands} />}
 
         {/* New Arrivals */}
         {isOn("new-arrivals") && (
@@ -263,7 +252,7 @@ export default async function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {liveCollections.map((c) => (
                 <Link key={c.id} href={`/collections/${c.slug}`} className="group">
-                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
+                  <div className="relative aspect-[3/2] rounded-lg overflow-hidden">
                     <Image
                       src={c.image}
                       alt={c.title}

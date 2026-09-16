@@ -1,116 +1,162 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { PromoStrip } from "@/lib/admin-store";
 
+// Infinite loop: the slides are rendered three times in a row and the track always rests on the
+// middle copy, so there is a neighbour on both sides. After sliding into an outer copy, the track
+// jumps back to the matching middle slide with the transition switched off, which looks identical.
+const GAP_PX = 12;
+
 export function PromoSlider({ slides }: { slides: PromoStrip[] }) {
   const count = slides.length;
-  const [active, setActive] = useState(0);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const looping = count > 1;
+  const items = looping ? [...slides, ...slides, ...slides] : slides;
 
-  const scrollTo = (idx: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const slide = track.children[idx] as HTMLElement;
-    if (!slide) return;
-    // Scroll so slide is centered (15% padding on each side)
-    const containerW = track.offsetWidth;
-    const slideW = slide.offsetWidth;
-    const left = slide.offsetLeft - (containerW - slideW) / 2;
-    track.scrollTo({ left, behavior: "smooth" });
-  };
-
-  const goTo = (i: number) => {
-    const target = (i + count) % count;
-    setActive(target);
-    scrollTo(target);
-    resetTimer();
-  };
-
-  const resetTimer = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    if (count <= 1) return;
-    timerRef.current = setInterval(() => {
-      setActive((cur) => {
-        const next = (cur + 1) % count;
-        scrollTo(next);
-        return next;
-      });
-    }, 4500);
-  };
+  const [pos, setPos] = useState(looping ? count : 0);
+  const [animate, setAnimate] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const posRef = useRef(pos);
 
   useEffect(() => {
-    resetTimer();
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [count]);
+    posRef.current = pos;
+  }, [pos]);
+
+  const active = looping ? pos % count : 0;
+  const inOuterCopy = (p: number) => p < count || p >= 2 * count;
+  const toMiddle = (p: number) => count + ((((p - count) % count) + count) % count);
+
+  const go = (delta: number) => {
+    if (!looping) return;
+    setAnimate(true);
+    setPos((p) => Math.min(Math.max(p + delta, 0), 3 * count - 1));
+  };
+
+  const recentre = () => {
+    if (looping && inOuterCopy(posRef.current)) {
+      setAnimate(false);
+      setPos(toMiddle(posRef.current));
+      return true;
+    }
+    return false;
+  };
+
+  // Turn the transition back on once the silent jump has been painted.
+  useEffect(() => {
+    if (animate) return;
+    let inner = 0;
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => setAnimate(true));
+    });
+    return () => {
+      cancelAnimationFrame(outer);
+      cancelAnimationFrame(inner);
+    };
+  }, [animate]);
+
+  useEffect(() => {
+    if (!looping || paused) return;
+    const id = setInterval(() => {
+      // Background tabs can skip transitionend, so recentre before moving on.
+      if (!recentre()) go(1);
+    }, 4500);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [looping, paused, count]);
 
   if (count === 0) return null;
 
   return (
-    <section className="w-full py-5">
-      <div className="relative">
-
-        {/* Scrollable track — all slides in a row, snaps to each */}
+    <section
+      className="w-full py-5"
+      aria-roledescription="carousel"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="relative overflow-hidden [--w:86%] sm:[--w:58%] lg:[--w:44%]">
         <div
-          ref={trackRef}
-          className="flex gap-3 overflow-x-hidden px-[3%]"
-          style={{ scrollbarWidth: "none" }}
+          className={"flex " + (animate ? "transition-transform duration-500 ease-out" : "")}
+          style={{
+            gap: GAP_PX,
+            transform: `translateX(calc(50% - ${pos} * (var(--w) + ${GAP_PX}px) - var(--w) / 2))`,
+          }}
+          onTransitionEnd={(e) => {
+            if (e.target === e.currentTarget) recentre();
+          }}
         >
-          {slides.map((s, i) => (
-            <div
-              key={s.id}
-              className={
-                "relative flex-shrink-0 w-[86%] sm:w-[70%] rounded-2xl overflow-hidden transition-opacity duration-300 " +
-                (i === active ? "opacity-100" : "opacity-60")
-              }
-              style={{ aspectRatio: "16/6" }}
-              onClick={() => i !== active && goTo(i)}
-            >
-              <img src={s.image} alt={s.title} className="h-full w-full object-cover" />
-              {s.title && i === active && (
-                <>
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
-                  <p className="absolute bottom-3 left-4 right-4 sm:bottom-6 sm:left-8 sm:right-auto font-heading italic text-base leading-snug sm:text-2xl text-white drop-shadow pointer-events-none">
-                    {s.title}
-                  </p>
-                </>
-              )}
-            </div>
-          ))}
+          {items.map((s, i) => {
+            const isActive = i === pos;
+            return (
+              <Link
+                key={`${s.id}-${i}`}
+                href={s.link || "/jewellery"}
+                aria-hidden={!isActive}
+                tabIndex={isActive ? 0 : -1}
+                onClick={(e) => {
+                  if (!isActive) {
+                    e.preventDefault();
+                    go(i - pos);
+                  }
+                }}
+                className={
+                  "relative block aspect-[3/2] w-[var(--w)] flex-shrink-0 overflow-hidden rounded-2xl transition-opacity duration-300 " +
+                  (isActive ? "opacity-100" : "opacity-60")
+                }
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={s.image} alt={s.title} loading="lazy" className="h-full w-full object-cover" />
+                {s.title && (
+                  <>
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/55 via-black/10 to-transparent" />
+                    <p className="pointer-events-none absolute bottom-4 left-4 right-4 font-heading text-lg italic leading-snug text-white drop-shadow sm:bottom-6 sm:left-8 sm:right-auto sm:text-3xl">
+                      {s.title}
+                    </p>
+                  </>
+                )}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Left arrow */}
-        {count > 1 && (
-          <button
-            onClick={() => goTo(active - 1)}
-            aria-label="Previous"
-            className="hidden sm:flex absolute left-[3.5%] top-1/2 -translate-y-1/2 z-20 h-10 w-10 items-center justify-center rounded-full bg-white shadow-md text-brand text-lg hover:bg-beige transition-colors"
-          >←</button>
-        )}
-
-        {/* Right arrow */}
-        {count > 1 && (
-          <button
-            onClick={() => goTo(active + 1)}
-            aria-label="Next"
-            className="hidden sm:flex absolute right-[3.5%] top-1/2 -translate-y-1/2 z-20 h-10 w-10 items-center justify-center rounded-full bg-white shadow-md text-brand text-lg hover:bg-beige transition-colors"
-          >→</button>
-        )}
-
-        {/* Dots */}
-        {count > 1 && (
-          <div className="flex justify-center gap-2 mt-3">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goTo(i)}
-                className={"rounded-full transition-all duration-300 " + (i === active ? "w-6 h-2 bg-brand" : "w-2 h-2 bg-brand/30 hover:bg-brand/60")}
-              />
-            ))}
-          </div>
+        {looping && (
+          <>
+            <button
+              onClick={() => go(-1)}
+              aria-label="Previous offer"
+              className="absolute left-[3.5%] top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-lg text-brand shadow-md transition-colors hover:bg-beige sm:flex"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => go(1)}
+              aria-label="Next offer"
+              className="absolute right-[3.5%] top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-lg text-brand shadow-md transition-colors hover:bg-beige sm:flex"
+            >
+              →
+            </button>
+          </>
         )}
       </div>
+
+      {looping && (
+        <div className="mt-3 flex justify-center gap-2">
+          {slides.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                setAnimate(true);
+                setPos(count + i);
+              }}
+              aria-label={`Go to offer ${i + 1}`}
+              className={
+                "rounded-full transition-all duration-300 " +
+                (i === active ? "h-2 w-6 bg-brand" : "h-2 w-2 bg-brand/30 hover:bg-brand/60")
+              }
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

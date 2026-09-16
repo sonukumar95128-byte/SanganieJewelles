@@ -138,7 +138,7 @@ export function Header() {
             aria-label="Open menu"
             aria-expanded={menuOpen}
             className={
-              "grid h-10 w-10 shrink-0 place-items-center rounded-full transition-colors md:hidden " +
+              "grid h-10 w-10 shrink-0 place-items-center rounded-full transition-colors lg:hidden " +
               (dark ? "text-gold-light hover:bg-brand-secondary" : "text-ink hover:bg-beige")
             }
           >
@@ -159,7 +159,7 @@ export function Header() {
 
         <nav
           className={
-            "hidden md:flex items-center justify-center gap-8 text-sm font-medium transition-colors " +
+            "hidden lg:flex items-center justify-center gap-4 xl:gap-8 whitespace-nowrap text-sm font-medium transition-colors " +
             (dark ? "text-gold-light" : "text-ink")
           }
         >
@@ -186,7 +186,7 @@ export function Header() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
               className={
-                "w-44 rounded-full border pl-9 pr-4 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-gold transition-colors " +
+                "w-44 lg:w-32 xl:w-44 rounded-full border pl-9 pr-4 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-gold transition-colors " +
                 (dark
                   ? "border-gold-light/25 bg-brand-secondary/40 text-gold-light placeholder:text-gold-light/40"
                   : "border-beige bg-ivory text-ink placeholder:text-ink/40")
@@ -245,7 +245,7 @@ export function Header() {
 
       {/* Mobile menu — rendered outside <header> so the scroll-hide transform doesn't move it */}
       {menuOpen && (
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <div
             className="fixed inset-0 z-[60] bg-black/50"
             onClick={() => setMenuOpen(false)}

@@ -6,12 +6,12 @@ import {
   collectionImages,
   dummyProducts,
   dummyTestimonials,
-  collectionBannerImages,
   categoryBannerImages,
   heroSlides,
   promoBanners,
   productImages,
   promoImage,
+  reelDefaults,
   slugify,
   type Category,
   type DummyProduct,
@@ -144,18 +144,20 @@ const ORDERS_KEY = "sanganie-admin-orders-v2";
 // v2: bumped after adding manageHref links to sections.
 const HOMEPAGE_KEY = "sanganie-admin-homepage-v3";
 // v2: bumped after adding promo slider strips + enabled field.
-const BANNERS_KEY = "sanganie-admin-banners-v3";
+// v4: banners now ship uncropped from /banners/full.
+const BANNERS_KEY = "sanganie-admin-banners-v4";
 const TESTIMONIALS_KEY = "sanganie-admin-testimonials";
 // v2: productCount replaced with real productSlugs[] for collection-to-product linking.
-const COLLECTIONS_KEY = "sanganie-admin-collections-v3";
+const COLLECTIONS_KEY = "sanganie-admin-collections-v4";
 const COUPONS_KEY = "sanganie-admin-coupons";
 const SETTINGS_KEY = "sanganie-admin-settings";
 const PRODUCT_REVIEWS_KEY = "sanganie-product-reviews";
 const NEW_ARRIVALS_KEY = "sanganie-admin-new-arrivals";
 const BEST_SELLERS_KEY = "sanganie-admin-best-sellers";
 const CATEGORY_IMAGES_KEY = "sanganie-admin-category-images";
-const PAGE_BANNERS_KEY = "sanganie-admin-page-banners-v2";
-const REELS_KEY = "sanganie-admin-reels";
+const PAGE_BANNERS_KEY = "sanganie-admin-page-banners-v3";
+// v2: seeded with default reels instead of an empty list.
+const REELS_KEY = "sanganie-admin-reels-v2";
 const TRUST_BADGES_KEY = "sanganie-trust-badges";
 
 const seedTrustBadges: TrustBadge[] = [
@@ -195,12 +197,21 @@ const seedPromoStrips: PromoStrip[] = [
   { ...promoBanners.productPage, position: "Single product page", enabled: true },
 ];
 
-// Keys match CategoryListing's pageId: "shop", category slugs, and collection-<slug>.
+// Keys match CategoryListing's pageId: "shop" and category slugs. Collection pages fall back to the collection image.
 const defaultPageBanners: Record<string, string> = {
   shop: promoImage,
   ...Object.fromEntries(Object.entries(categoryBannerImages).map(([cat, url]) => [slugify(cat), url])),
-  ...Object.fromEntries(Object.entries(collectionBannerImages).map(([slug, url]) => [`collection-${slug}`, url])),
 };
+
+const seedReels: AdminReel[] = reelDefaults.map((r) => ({
+  id: r.id,
+  title: r.title,
+  videoUrl: "",
+  thumbnail: r.image,
+  enabled: true,
+  format: "portrait",
+  productSlug: r.productSlug,
+}));
 
 const seedTestimonials: AdminTestimonial[] = dummyTestimonials.map((t, i) => ({
   id: `testimonial-${i + 1}`,
@@ -711,7 +722,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setPageBanners((prev) => ({ ...prev, [pageId]: url }));
   };
 
-  const [reels, setReels] = useState<AdminReel[]>([]);
+  const [reels, setReels] = useState<AdminReel[]>(seedReels);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

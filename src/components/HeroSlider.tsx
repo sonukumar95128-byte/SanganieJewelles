@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 
 // mobileImage is a separate portrait design: banners carry their headline inside the
 // image, and a wide banner's text is too small to read on a phone.
+// Slides are never cropped. When the screen is shorter than the banner, the whole banner
+// is shown and a blurred copy of it fills the sides.
 type Slide = { image: string; href: string; alt: string; mobileImage?: string };
 
 const DESKTOP_MEDIA = "(min-width: 768px)"; // Tailwind md
@@ -16,36 +18,47 @@ function SlideImage({ slide, eager }: { slide: Slide; eager: boolean }) {
 
   if (!slide.mobileImage) {
     return (
-      <Image
-        src={slide.image}
-        alt={slide.alt}
-        fill
-        loading={loading}
-        fetchPriority={fetchPriority}
-        sizes="100vw"
-        className="object-cover"
-      />
+      <>
+        <Image src={slide.image} alt="" aria-hidden fill loading={loading} sizes="100vw" className="object-cover blur-2xl scale-110 opacity-80" />
+        <Image
+          src={slide.image}
+          alt={slide.alt}
+          fill
+          loading={loading}
+          fetchPriority={fetchPriority}
+          sizes="100vw"
+          className="object-contain"
+        />
+      </>
     );
   }
 
   const common = { alt: slide.alt, sizes: "100vw", loading, fetchPriority };
   const {
     props: { srcSet: desktopSrcSet },
-  } = getImageProps({ ...common, src: slide.image, width: 1536, height: 672 });
+  } = getImageProps({ ...common, src: slide.image, width: 1536, height: 1024 });
   const {
     props: { srcSet: mobileSrcSet, ...mobileProps },
   } = getImageProps({ ...common, src: slide.mobileImage, width: 1024, height: 1536 });
 
-  return (
+  const art = (className: string, decorative: boolean) => (
     <picture>
       <source media={DESKTOP_MEDIA} srcSet={desktopSrcSet} />
       {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- alt is in mobileProps */}
       <img
         {...mobileProps}
+        {...(decorative ? { alt: "", "aria-hidden": true, fetchPriority: undefined } : {})}
         srcSet={mobileSrcSet}
-        className="absolute inset-0 h-full w-full object-cover"
+        className={"absolute inset-0 h-full w-full " + className}
       />
     </picture>
+  );
+
+  return (
+    <>
+      {art("object-cover blur-2xl scale-110 opacity-80", true)}
+      {art("object-contain", false)}
+    </>
   );
 }
 
@@ -94,8 +107,8 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
   return (
     <div
       className={
-        "relative w-full overflow-hidden " +
-        (hasMobileArt ? "aspect-[2/3] md:aspect-[16/7]" : "aspect-[16/7]")
+        "relative w-full overflow-hidden bg-brand max-h-[calc(100svh-7rem)] " +
+        (hasMobileArt ? "aspect-[2/3] md:aspect-[3/2]" : "aspect-[3/2]")
       }
     >
       {slides.map((slide, i) => (

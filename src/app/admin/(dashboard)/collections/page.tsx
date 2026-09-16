@@ -23,7 +23,7 @@ export default function AdminCollectionsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {collections.map((c) => (
           <div key={c.id} className="rounded-xl border border-beige bg-white p-4">
-            <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-beige border border-beige mb-2">
+            <div className="relative aspect-[3/2] rounded-lg overflow-hidden bg-beige border border-beige mb-2">
               <Image src={c.image} alt={c.title} fill sizes="300px" className="object-cover" />
               {!c.enabled && (
                 <div className="absolute inset-0 bg-black/40 grid place-items-center text-xs text-white font-medium">
