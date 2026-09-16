@@ -185,24 +185,29 @@ export default async function Home() {
       {/* Category circles — gradient band, each circle in a frosted glass ring */}
       {isOn("categories") && (
         <SectionBand>
-          <section className="overflow-x-auto [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory py-3">
-            <div data-reveal-stagger="right" className="flex gap-6 sm:gap-10 mx-auto w-fit px-2">
-              {categories.map((c) => (
-                <Link key={c} href={`/jewellery/${categoryToSlug(c)}`} className="flex flex-col items-center gap-3 group shrink-0 snap-center">
-                  <div className="rounded-full border border-white/70 bg-white/40 p-1.5 shadow-[0_8px_24px_rgba(18,60,48,0.12)] backdrop-blur-md transition-all duration-500 ease-apple group-hover:border-gold/70 group-hover:shadow-[0_10px_30px_rgba(201,162,39,0.28)]">
-                    <div className="relative h-24 w-24 sm:h-32 sm:w-32 lg:h-36 lg:w-36 rounded-full overflow-hidden">
-                      <Image
-                        src={catImages[c] || defaultCategoryImages[c] || ""}
-                        alt={c}
-                        fill
-                        sizes="(min-width:1024px) 144px, (min-width:640px) 128px, 96px"
-                        className="object-cover"
-                      />
+          <section>
+            <div data-reveal>
+              <SectionHeading title="Shop by Category" subtitle="Find your favourite in every style" viewAllHref="/jewellery" viewAllLabel="Shop all" />
+            </div>
+            <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory py-3">
+              <div data-reveal-stagger="right" className="flex gap-6 sm:gap-10 mx-auto w-fit px-2">
+                {categories.map((c) => (
+                  <Link key={c} href={`/jewellery/${categoryToSlug(c)}`} className="flex flex-col items-center gap-3 group shrink-0 snap-center">
+                    <div className="rounded-full border border-white/70 bg-white/40 p-1.5 shadow-[0_8px_24px_rgba(18,60,48,0.12)] backdrop-blur-md transition-all duration-500 ease-apple group-hover:border-gold/70 group-hover:shadow-[0_10px_30px_rgba(201,162,39,0.28)]">
+                      <div className="relative h-24 w-24 sm:h-32 sm:w-32 lg:h-36 lg:w-36 rounded-full overflow-hidden">
+                        <Image
+                          src={catImages[c] || defaultCategoryImages[c] || ""}
+                          alt={c}
+                          fill
+                          sizes="(min-width:1024px) 144px, (min-width:640px) 128px, 96px"
+                          className="object-cover"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <span className="text-sm sm:text-base text-ink/80">{c}</span>
-                </Link>
-              ))}
+                    <span className="text-sm sm:text-base text-ink/80">{c}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </section>
         </SectionBand>

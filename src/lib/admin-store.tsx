@@ -159,7 +159,8 @@ const PRODUCT_REVIEWS_KEY = "sanganie-product-reviews";
 // v2: defaults now mixed across categories.
 const NEW_ARRIVALS_KEY = "sanganie-admin-new-arrivals-v2";
 const BEST_SELLERS_KEY = "sanganie-admin-best-sellers-v2";
-const CATEGORY_IMAGES_KEY = "sanganie-admin-category-images";
+// v2: circles now use crops of the category banners.
+const CATEGORY_IMAGES_KEY = "sanganie-admin-category-images-v2";
 const PAGE_BANNERS_KEY = "sanganie-admin-page-banners-v3";
 // v2: seeded with default reels instead of an empty list.
 const REELS_KEY = "sanganie-admin-reels-v2";

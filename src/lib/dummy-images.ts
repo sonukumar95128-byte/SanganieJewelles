@@ -2,11 +2,21 @@
 // Real catalog product data/photos are generated from the CSV export — see src/lib/real-products.ts.
 import { realProducts } from "@/lib/real-products";
 
+// Homepage category circles: square crops of each category banner, centred on its jewellery.
 export const categoryImages: Record<string, string> = {
+  Rings: "/banners/full/circle-rings.webp",
+  Earrings: "/banners/full/circle-earrings.webp",
+  Necklaces: "/banners/full/circle-necklaces.webp",
+  Bracelets: "/banners/full/circle-bracelets.webp",
+  Pendants: "/banners/full/circle-pendants.webp",
+  "Nose Pins": "/banners/full/circle-nosepins.webp",
+};
+
+// Product photos still used by the Shop by Relation circles.
+const relationPhotos = {
   Rings: "https://res.cloudinary.com/sbj4xmfv/image/upload/ALR00390-1.webp",
   Earrings: "https://res.cloudinary.com/sbj4xmfv/image/upload/APS00217E-1.webp",
   Necklaces: "https://res.cloudinary.com/sbj4xmfv/image/upload/AMS00143-1.webp",
-  Bracelets: "https://res.cloudinary.com/sbj4xmfv/image/upload/ALB00230-1.webp",
   Pendants: "https://res.cloudinary.com/sbj4xmfv/image/upload/APS00264.webp",
   "Nose Pins": "https://res.cloudinary.com/sbj4xmfv/image/upload/ANP000061-1.webp",
 };
@@ -181,11 +191,11 @@ export type RelationShop = {
 };
 
 export const relationShops: RelationShop[] = [
-  { label: "Mother", categories: ["Necklaces", "Pendants"], image: categoryImages.Necklaces },
-  { label: "Sister", categories: ["Earrings", "Bracelets"], image: categoryImages.Earrings },
-  { label: "Wife", categories: ["Rings", "Necklaces"], image: categoryImages.Rings },
-  { label: "Friend", categories: ["Pendants", "Earrings"], image: categoryImages.Pendants },
-  { label: "Daughter", categories: ["Nose Pins", "Rings"], image: categoryImages["Nose Pins"] },
+  { label: "Mother", categories: ["Necklaces", "Pendants"], image: relationPhotos.Necklaces },
+  { label: "Sister", categories: ["Earrings", "Bracelets"], image: relationPhotos.Earrings },
+  { label: "Wife", categories: ["Rings", "Necklaces"], image: relationPhotos.Rings },
+  { label: "Friend", categories: ["Pendants", "Earrings"], image: relationPhotos.Pendants },
+  { label: "Daughter", categories: ["Nose Pins", "Rings"], image: relationPhotos["Nose Pins"] },
 ];
 
 export type DummyProduct = {
