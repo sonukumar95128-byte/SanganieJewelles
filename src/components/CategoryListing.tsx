@@ -56,17 +56,16 @@ function CategoryListingContent({ title, pageId, fallbackBanner, products, activ
 
   return (
     <div>
-      {/* Banner — the whole 3:2 picture, never cropped. Title sits beside it on desktop, over it on phones. */}
-      <section className="bg-brand">
-        <div className="relative mx-auto max-w-7xl md:grid md:grid-cols-2 md:items-center">
-          <div className="relative aspect-[3/2] md:order-2">
-            <Image src={bannerImage} alt={title} fill loading="eager" fetchPriority="high" sizes="(min-width:1280px) 640px, (min-width:768px) 50vw, 100vw" className="object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-brand/70 via-brand/25 to-transparent md:hidden" />
-          </div>
-          <div className="absolute inset-y-0 left-0 flex flex-col justify-center px-5 md:static md:px-12 lg:px-16 md:py-10">
-            <p className="hidden md:block text-xs uppercase tracking-[0.3em] text-gold-light">Sanganie Jewells</p>
-            <h1 className="font-heading italic text-3xl text-white drop-shadow md:mt-3 md:text-5xl md:drop-shadow-none">{title}</h1>
-            <p className="mt-2 text-xs text-white/80 md:mt-4 md:text-sm md:text-white/60">{products.length} pieces</p>
+      {/* Banner — full width at the picture's own 3:2 shape. Only on very wide screens does the
+          900px cap trim a strip of background from the top and bottom. */}
+      <section className="relative aspect-[3/2] max-h-[900px] w-full overflow-hidden bg-brand">
+        <Image src={bannerImage} alt={title} fill loading="eager" fetchPriority="high" sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand/75 via-brand/20 via-35% to-transparent to-60%" />
+        <div className="absolute inset-0 mx-auto flex max-w-7xl flex-col justify-center px-5 sm:px-6 lg:px-8">
+          <div className="animate-fadeUp">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-gold-light md:text-xs">Sanganie Jewells</p>
+            <h1 className="mt-1 font-heading text-3xl italic text-white drop-shadow md:mt-3 md:text-5xl lg:text-6xl">{title}</h1>
+            <p className="mt-2 text-xs text-white/80 md:mt-4 md:text-sm">{products.length} pieces</p>
           </div>
         </div>
       </section>
