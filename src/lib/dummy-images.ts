@@ -12,14 +12,6 @@ export const categoryImages: Record<string, string> = {
   "Nose Pins": "/banners/full/circle-nosepins.webp",
 };
 
-// Product photos still used by the Shop by Relation circles.
-const relationPhotos = {
-  Rings: "https://res.cloudinary.com/sbj4xmfv/image/upload/ALR00390-1.webp",
-  Earrings: "https://res.cloudinary.com/sbj4xmfv/image/upload/APS00217E-1.webp",
-  Necklaces: "https://res.cloudinary.com/sbj4xmfv/image/upload/AMS00143-1.webp",
-  Pendants: "https://res.cloudinary.com/sbj4xmfv/image/upload/APS00264.webp",
-  "Nose Pins": "https://res.cloudinary.com/sbj4xmfv/image/upload/ANP000061-1.webp",
-};
 
 export const categoryBannerImages: Record<string, string> = {
   Rings: "/banners/full/cat-rings.webp",
@@ -191,11 +183,11 @@ export type RelationShop = {
 };
 
 export const relationShops: RelationShop[] = [
-  { label: "Mother", categories: ["Necklaces", "Pendants"], image: relationPhotos.Necklaces },
-  { label: "Sister", categories: ["Earrings", "Bracelets"], image: relationPhotos.Earrings },
-  { label: "Wife", categories: ["Rings", "Necklaces"], image: relationPhotos.Rings },
-  { label: "Friend", categories: ["Pendants", "Earrings"], image: relationPhotos.Pendants },
-  { label: "Daughter", categories: ["Nose Pins", "Rings"], image: relationPhotos["Nose Pins"] },
+  { label: "Mother", categories: ["Necklaces", "Pendants"], image: "/banners/full/relation-mother.webp" },
+  { label: "Sister", categories: ["Earrings", "Bracelets"], image: "/banners/full/relation-sister.webp" },
+  { label: "Wife", categories: ["Rings", "Necklaces"], image: "/banners/full/relation-wife.webp" },
+  { label: "Friend", categories: ["Pendants", "Earrings"], image: "/banners/full/relation-friend.webp" },
+  { label: "Daughter", categories: ["Nose Pins", "Rings"], image: "/banners/full/relation-daughter.webp" },
 ];
 
 export type DummyProduct = {
