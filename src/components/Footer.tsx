@@ -56,11 +56,11 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div>
           <Image
-            src="/brand/sanganie-jewells-logo.png"
+            src="/brand/sanganie-jewells-logo-gold.png"
             alt="Sanganie Jewells"
             width={220}
             height={220}
-            className="h-20 w-20 rounded-lg object-contain mb-3"
+            className="h-20 w-20 object-contain mb-3"
           />
           <p className="text-xs text-gold-light/60 leading-relaxed">
             Luxurious concepts in fine jewellery — handcrafted, hallmarked, and certified.

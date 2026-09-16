@@ -147,11 +147,11 @@ export function Header() {
 
           <Link href="/" className="shrink-0">
             <Image
-              src="/brand/sanganie-jewells-logo.png"
+              src="/brand/sanganie-jewells-logo-gold.png"
               alt="Sanganie Jewells"
               width={160}
               height={160}
-              className="h-11 w-11 rounded-md object-contain sm:h-12 sm:w-12"
+              className="h-11 w-11 object-contain sm:h-12 sm:w-12"
               priority
             />
           </Link>
@@ -259,11 +259,11 @@ export function Header() {
           >
             <div className="flex items-center justify-between border-b border-beige px-4 py-3">
               <Image
-                src="/brand/sanganie-jewells-logo.png"
+                src="/brand/sanganie-jewells-logo-gold.png"
                 alt="Sanganie Jewells"
                 width={160}
                 height={160}
-                className="h-10 w-10 rounded-md object-contain"
+                className="h-10 w-10 object-contain"
               />
               <button
                 onClick={() => setMenuOpen(false)}

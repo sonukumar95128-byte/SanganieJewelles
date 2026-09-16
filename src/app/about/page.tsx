@@ -6,11 +6,11 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 py-12">
       <Image
-        src="/brand/sanganie-jewells-logo.png"
+        src="/brand/sanganie-jewells-logo-gold.png"
         alt="Sanganie Jewells"
         width={220}
         height={220}
-        className="h-20 w-20 rounded-lg object-contain mb-6"
+        className="h-20 w-20 object-contain mb-6"
       />
       <h1 className="font-heading italic text-3xl text-brand mb-6">About Sanganie Jewells</h1>
 
