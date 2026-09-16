@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useAdmin, type AdminReel } from "@/lib/admin-store";
 import { categoryToSlug } from "@/lib/dummy-images";
 
@@ -107,119 +107,145 @@ function ReelItem({
   );
 }
 
+// Coverflow: every reel sits on one stage and is placed purely by its distance from the active
+// reel, so changing reel is a transform transition (a continuous glide), never a re-layout.
+// The list is repeated to at least 7 slots; only two reels either side are shown, so the reel
+// that wraps from one end to the other always makes that trip while invisible.
+const SIDE = 2;
+const MIN_SLOTS = 7;
+const AUTOPLAY_MS = 4500;
+
+function slotStyle(offset: number): CSSProperties {
+  const distance = Math.abs(offset);
+  const shift = ["0px", "var(--gap1)", "var(--gap2)"][distance] ?? "var(--gap3)";
+  const scale = [1, 0.82, 0.66][distance] ?? 0.5;
+  return {
+    transform: `translate(-50%, -50%) translateX(calc(${Math.sign(offset)} * ${shift})) scale(${scale})`,
+    opacity: [1, 0.8, 0.5][distance] ?? 0,
+    zIndex: 30 - Math.min(distance, 3) * 10,
+  };
+}
+
 export function ReelsSection({ reels, onDark = false }: { reels: AdminReel[]; onDark?: boolean }) {
   const { products } = useAdmin();
   const activeReels = reels.filter((r) => r.enabled);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartX = useRef(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const count = activeReels.length;
+  const copies = count > 1 ? Math.ceil(MIN_SLOTS / count) : 1;
+  const slots = Array.from({ length: count * copies }, (_, i) => activeReels[i % count]);
+  const total = slots.length;
 
-  const goTo = useCallback((i: number) => {
-    setActiveIdx((i + count) % count);
-  }, [count]);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const dragStartX = useRef<number | null>(null);
+  const dragged = useRef(false);
 
-  const resetTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    if (count <= 1) return;
-    timerRef.current = setInterval(() => {
-      setActiveIdx((cur) => (cur + 1) % count);
-    }, 5000);
-  }, [count]);
+  const go = (delta: number) => {
+    if (total > 1) setActive((a) => (((a + delta) % total) + total) % total);
+  };
+
+  // Signed distance of a slot from the active one, the short way round.
+  const offsetOf = (i: number) => {
+    const d = (((i - active) % total) + total) % total;
+    return d > total / 2 ? d - total : d;
+  };
 
   useEffect(() => {
-    resetTimer();
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [resetTimer]);
+    if (count <= 1 || paused) return;
+    const id = setInterval(() => setActive((a) => (a + 1) % total), AUTOPLAY_MS);
+    return () => clearInterval(id);
+  }, [count, paused, total]);
 
   useEffect(() => {
     videoRefs.current.forEach((v, i) => {
       if (!v) return;
-      if (i === activeIdx) { v.play().catch(() => {}); }
-      else { v.pause(); v.currentTime = 0; }
+      if (i === active) v.play().catch(() => {});
+      else {
+        v.pause();
+        v.currentTime = 0;
+      }
     });
-  }, [activeIdx]);
-
-  const onDragStart = (x: number) => { setIsDragging(true); dragStartX.current = x; };
-  const onDragEnd = (x: number) => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    const diff = dragStartX.current - x;
-    if (Math.abs(diff) > 50) { goTo(activeIdx + (diff > 0 ? 1 : -1)); resetTimer(); }
-  };
+  }, [active]);
 
   if (count === 0) return null;
 
-  const currentFormat = activeReels[activeIdx]?.format ?? "portrait";
-  // Draw previous, current, next in that order so the current reel stays in the middle when the loop wraps.
-  const visible =
-    count >= 3
-      ? [(activeIdx - 1 + count) % count, activeIdx, (activeIdx + 1) % count]
-      : count === 2
-        ? [(activeIdx + 1) % count, activeIdx]
-        : [activeIdx];
-  const isLandscape = currentFormat === "landscape";
+  const activeReelIndex = active % count;
 
   return (
-    <div className="relative w-full select-none">
+    <div
+      className="relative w-full select-none"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       <div
-        className="flex items-center justify-center gap-3 sm:gap-4 overflow-hidden px-4"
-        onMouseDown={(e) => onDragStart(e.clientX)}
-        onMouseUp={(e) => onDragEnd(e.clientX)}
-        onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
-        onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX)}
+        className="relative w-full touch-pan-y overflow-hidden h-[calc(var(--reel-w)_*_16_/_9_+_2rem)] [--reel-w:44vw] [--gap1:58%] [--gap2:100%] [--gap3:140%] sm:[--reel-w:240px] sm:[--gap1:70%] sm:[--gap2:122%] sm:[--gap3:170%] lg:[--reel-w:300px] lg:[--gap1:78%] lg:[--gap2:140%] lg:[--gap3:190%]"
+        onPointerDown={(e) => {
+          dragStartX.current = e.clientX;
+          dragged.current = false;
+        }}
+        onPointerUp={(e) => {
+          if (dragStartX.current === null) return;
+          const diff = dragStartX.current - e.clientX;
+          dragStartX.current = null;
+          if (Math.abs(diff) > 50) {
+            dragged.current = true;
+            go(diff > 0 ? 1 : -1);
+          }
+        }}
       >
-        {visible.map((i) => {
-          const reel = activeReels[i];
-          const isCenter = i === activeIdx;
-
-          const fmt = reel.format ?? "portrait";
-          const aspectRatio = fmt === "landscape" ? "16/9" : "9/16";
+        {slots.map((reel, i) => {
+          const offset = offsetOf(i);
+          const distance = Math.abs(offset);
+          const isCenter = offset === 0;
+          const taggedProduct = reel.productSlug ? products.find((p) => p.slug === reel.productSlug) : undefined;
 
           return (
             <div
-              key={reel.id}
-              onClick={() => { if (!isCenter) { goTo(i); resetTimer(); } }}
-              className={[
-                "relative flex-shrink-0 rounded-2xl overflow-hidden transition-all duration-700 ease-apple cursor-pointer",
-                isCenter
-                  ? isLandscape
-                    ? "w-[90%] sm:w-[70%] lg:w-[55%] opacity-100 scale-100 z-10 shadow-2xl"
-                    : "w-[55%] sm:w-[38%] lg:w-[26%] opacity-100 scale-100 z-10 shadow-2xl"
-                  : isLandscape
-                    ? "w-[30%] sm:w-[20%] lg:w-[15%] opacity-40 scale-95 z-0"
-                    : "w-[22%] sm:w-[20%] lg:w-[15%] opacity-40 scale-95 z-0",
-              ].join(" ")}
-              style={{ aspectRatio }}
+              key={`${reel.id}-${i}`}
+              aria-hidden={!isCenter}
+              onClick={() => {
+                if (dragged.current) return;
+                if (!isCenter && distance <= SIDE) go(offset);
+              }}
+              className={
+                "absolute left-1/2 top-1/2 w-[var(--reel-w)] aspect-[9/16] overflow-hidden rounded-2xl will-change-transform " +
+                "transition-[transform,opacity,box-shadow] duration-[900ms] ease-apple motion-reduce:transition-none " +
+                (isCenter ? "shadow-2xl " : "cursor-pointer ") +
+                (distance > SIDE ? "pointer-events-none" : "")
+              }
+              style={slotStyle(offset)}
             >
-              <ReelItem
-                reel={reel}
-                isCenter={isCenter}
-                videoRef={(el) => { videoRefs.current[i] = el; }}
-              />
+              {distance <= SIDE + 1 && (
+                <ReelItem
+                  reel={reel}
+                  isCenter={isCenter}
+                  videoRef={(el) => {
+                    videoRefs.current[i] = el;
+                  }}
+                />
+              )}
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-              {isCenter && (() => {
-                const taggedProduct = reel.productSlug ? products.find((p) => p.slug === reel.productSlug) : undefined;
-                return (
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    {taggedProduct ? (
-                      <Link
-                        href={`/jewellery/${categoryToSlug(taggedProduct.category)}/${taggedProduct.slug}`}
-                        className="flex items-center gap-1.5 text-white text-sm font-medium drop-shadow hover:text-gold-light transition-colors"
-                      >
-                        <span className="line-clamp-1">{taggedProduct.name}</span>
-                        <span className="shrink-0">→</span>
-                      </Link>
-                    ) : (
-                      reel.title && <p className="text-white text-sm font-medium drop-shadow line-clamp-2">{reel.title}</p>
-                    )}
-                  </div>
-                );
-              })()}
+              <div
+                className={
+                  "absolute bottom-0 left-0 right-0 p-4 transition-opacity duration-500 " +
+                  (isCenter ? "opacity-100" : "pointer-events-none opacity-0")
+                }
+              >
+                {taggedProduct ? (
+                  <Link
+                    href={`/jewellery/${categoryToSlug(taggedProduct.category)}/${taggedProduct.slug}`}
+                    tabIndex={isCenter ? 0 : -1}
+                    className="flex items-center gap-1.5 text-white text-sm font-medium drop-shadow hover:text-gold-light transition-colors"
+                  >
+                    <span className="line-clamp-1">{taggedProduct.name}</span>
+                    <span className="shrink-0">→</span>
+                  </Link>
+                ) : (
+                  reel.title && <p className="text-white text-sm font-medium drop-shadow line-clamp-2">{reel.title}</p>
+                )}
+              </div>
             </div>
           );
         })}
@@ -228,25 +254,40 @@ export function ReelsSection({ reels, onDark = false }: { reels: AdminReel[]; on
       {count > 1 && (
         <>
           <button
-            onClick={() => { goTo(activeIdx - 1); resetTimer(); }}
-            className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 z-20 h-9 w-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-brand text-lg hover:bg-white transition-colors"
-          >‹</button>
+            onClick={() => go(-1)}
+            aria-label="Previous reel"
+            className="absolute left-1 sm:left-4 top-[calc(50%_-_1rem)] -translate-y-1/2 z-40 h-10 w-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-brand text-lg hover:bg-white transition-colors"
+          >
+            ‹
+          </button>
           <button
-            onClick={() => { goTo(activeIdx + 1); resetTimer(); }}
-            className="absolute right-1 sm:right-4 top-1/2 -translate-y-1/2 z-20 h-9 w-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-brand text-lg hover:bg-white transition-colors"
-          >›</button>
+            onClick={() => go(1)}
+            aria-label="Next reel"
+            className="absolute right-1 sm:right-4 top-[calc(50%_-_1rem)] -translate-y-1/2 z-40 h-10 w-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-brand text-lg hover:bg-white transition-colors"
+          >
+            ›
+          </button>
         </>
       )}
 
       {count > 1 && (
         <div className="flex justify-center gap-1.5 mt-4">
-          {activeReels.map((_, i) => (
+          {activeReels.map((reel, i) => (
             <button
-              key={i}
-              onClick={() => { goTo(i); resetTimer(); }}
-              className={"rounded-full transition-all duration-300 " + (i === activeIdx
+              key={reel.id}
+              aria-label={`Go to reel ${i + 1}`}
+              onClick={() => {
+                // Move the short way round to the nearest copy of that reel.
+                let delta = (((i - activeReelIndex) % count) + count) % count;
+                if (delta > count / 2) delta -= count;
+                go(delta);
+              }}
+              className={
+                "rounded-full transition-all duration-300 " +
+                (i === activeReelIndex
                   ? "w-6 h-2 " + (onDark ? "bg-gold" : "bg-brand")
-                  : "w-2 h-2 " + (onDark ? "bg-gold-light/30 hover:bg-gold-light/60" : "bg-brand/25 hover:bg-brand/50"))}
+                  : "w-2 h-2 " + (onDark ? "bg-gold-light/30 hover:bg-gold-light/60" : "bg-brand/25 hover:bg-brand/50"))
+              }
             />
           ))}
         </div>
