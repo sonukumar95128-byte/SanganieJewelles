@@ -118,6 +118,18 @@ body {
   to { opacity: 1; transform: none; filter: none; }
 }
 
+/* Trust badges ticker: slides one full copy of the badges, then repeats seamlessly. */
+@keyframes trustTicker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-trust-ticker { animation: trustTicker 24s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-trust-ticker { animation: none; }
+}
+
 @keyframes reelPan {
   from { object-position: 100% 50%; }
   to   { object-position: 0% 50%; }
