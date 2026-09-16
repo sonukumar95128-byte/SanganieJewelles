@@ -70,6 +70,37 @@ export function ProductCard({ slug, image, hoverImage, name, price, badge, href 
             )}
           </>
         )}
+        {/* Wishlist + compare float over the photo so Add to Bag can take the whole row */}
+        <div className="absolute top-2.5 right-2.5 z-10 flex flex-col gap-1.5">
+          <button
+            onClick={() => toggleWishlist(slug)}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            className={
+              "grid h-8 w-8 place-items-center rounded-full border shadow-sm backdrop-blur-sm transition-colors " +
+              (wishlisted ? "border-gold bg-gold-light/40 text-gold" : "border-white/80 bg-white/85 text-ink/50 hover:border-gold hover:text-gold")
+            }
+          >
+            <span className="text-sm">{wishlisted ? "♥" : "♡"}</span>
+          </button>
+          <button
+            onClick={() => toggleCompare(slug)}
+            disabled={!comparing && compareFull}
+            aria-label={comparing ? "Remove from compare" : "Add to compare"}
+            title={
+              !comparing && compareFull ? `You can compare up to ${COMPARE_LIMIT} items` : "Compare"
+            }
+            className={
+              "grid h-8 w-8 place-items-center rounded-full border text-sm shadow-sm backdrop-blur-sm transition-colors " +
+              (comparing
+                ? "border-gold bg-gold-light/40 text-gold"
+                : compareFull
+                  ? "border-white/80 bg-white/70 text-ink/20 cursor-not-allowed"
+                  : "border-white/80 bg-white/85 text-ink/50 hover:border-gold hover:text-gold")
+            }
+          >
+            ⇄
+          </button>
+        </div>
         {badge && (
           <span
             className={
@@ -106,52 +137,22 @@ export function ProductCard({ slug, image, hoverImage, name, price, badge, href 
           <div className="h-3 w-3/4 rounded bg-beige mb-4" />
         )}
 
-        {/* Add to Bag + Wishlist + Compare in one row */}
-        <div className="flex items-center gap-1.5">
-          {inBag ? (
-            <Link
-              href="/cart"
-              className="min-w-0 flex-1 truncate rounded-full bg-brand px-2 text-center text-xs font-medium text-gold-light py-2 transition-colors hover:bg-brand-secondary"
-            >
-              In Bag ✓
-            </Link>
-          ) : (
-            <button
-              onClick={() => addItem(slug)}
-              className="min-w-0 flex-1 truncate rounded-full border border-brand px-2 text-xs font-medium text-brand py-2 transition-colors hover:bg-brand hover:text-gold-light"
-            >
-              Add to Bag
-            </button>
-          )}
-          <button
-            onClick={() => toggleWishlist(slug)}
-            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-            className={
-              "shrink-0 grid h-8 w-8 place-items-center rounded-full border transition-colors " +
-              (wishlisted ? "border-gold bg-gold-light/20 text-gold" : "border-beige text-ink/40 hover:border-gold hover:text-gold")
-            }
+        {/* Add to Bag gets the full width */}
+        {inBag ? (
+          <Link
+            href="/cart"
+            className="block w-full rounded-full bg-brand px-2 py-2 text-center text-xs font-medium text-gold-light transition-colors hover:bg-brand-secondary sm:text-sm"
           >
-            <span className="text-sm">{wishlisted ? "♥" : "♡"}</span>
-          </button>
+            In Bag ✓
+          </Link>
+        ) : (
           <button
-            onClick={() => toggleCompare(slug)}
-            disabled={!comparing && compareFull}
-            aria-label={comparing ? "Remove from compare" : "Add to compare"}
-            title={
-              !comparing && compareFull ? `You can compare up to ${COMPARE_LIMIT} items` : "Compare"
-            }
-            className={
-              "shrink-0 grid h-8 w-8 place-items-center rounded-full border text-sm transition-colors " +
-              (comparing
-                ? "border-gold bg-gold-light/20 text-gold"
-                : compareFull
-                  ? "border-beige text-ink/20 cursor-not-allowed"
-                  : "border-beige text-ink/40 hover:border-gold hover:text-gold")
-            }
+            onClick={() => addItem(slug)}
+            className="w-full rounded-full border border-brand px-2 py-2 text-xs font-medium text-brand transition-colors hover:bg-brand hover:text-gold-light sm:text-sm"
           >
-            ⇄
+            Add to Bag
           </button>
-        </div>
+        )}
       </div>
     </div>
   );
