@@ -8,6 +8,7 @@ import { ProductPurchasePanel } from "@/components/ProductPurchasePanel";
 import { ProductShareButton } from "@/components/ProductShareButton";
 import { ProductTabs } from "@/components/ProductTabs";
 import { ProductTags } from "@/components/ProductTags";
+import { ProductCustomerStories, ProductTrustBadges } from "@/components/ProductTrustAndStories";
 import { RecentlyViewed } from "@/components/RecentlyViewed";
 import { TrackRecentlyViewed } from "@/components/TrackRecentlyViewed";
 import {
@@ -97,6 +98,8 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
+      <ProductTrustBadges />
+
       <div className="mt-12">
         <ProductTabs
           productSlug={product.slug}
@@ -107,6 +110,8 @@ export default async function ProductDetailPage({
         />
         <ProductTags categoryTags={getCategoryTags(category)} tags={styleTags} />
       </div>
+
+      <ProductCustomerStories productSlug={product.slug} />
 
       <TrackRecentlyViewed slug={product.slug} />
       <ProductPagePromo />

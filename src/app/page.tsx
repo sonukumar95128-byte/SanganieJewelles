@@ -4,17 +4,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { getPrisma } from "@/lib/prisma";
 import { CuratedProductGrid } from "@/components/CuratedProductGrid";
+import { CustomerStoryGrid, pickTestimonials } from "@/components/CustomerStories";
 import { HeroSlider } from "@/components/HeroSlider";
 import { PriceTiles } from "@/components/PriceTiles";
 import { PromoSlider } from "@/components/PromoSlider";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ReelsSection } from "@/components/ReelsSection";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { TrustBadgeGrid } from "@/components/TrustBadges";
 import {
   categories,
   categoryImages as defaultCategoryImages,
   categoryToSlug,
-  dummyProducts,
   dummyTestimonials,
   heroSlides,
   collectionImages,
@@ -25,7 +26,6 @@ import {
   bestSellerSlugs,
   reelDefaults,
   relationShops,
-  getProductBySlug,
 } from "@/lib/dummy-images";
 import type {
   AdminReel,
@@ -169,10 +169,7 @@ export default async function Home() {
 
   const homeSlides = promoStrips.filter((p) => p.position === "Homepage slider" && p.enabled !== false);
   const liveCollections = collections.filter((c) => c.enabled);
-  const liveTestimonials = testimonials
-    .filter((t) => t.status === "approved")
-    .sort((a, b) => Number(b.featured) - Number(a.featured))
-    .slice(0, 3);
+  const liveTestimonials = pickTestimonials(testimonials);
 
   return (
     <div className="space-y-16 pb-16">
@@ -308,61 +305,13 @@ export default async function Home() {
             <div data-reveal>
               <SectionHeading title="Customer Stories" subtitle="★ 4.8 average · 12,400+ verified reviews" />
             </div>
-            <div data-reveal-stagger className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {liveTestimonials.map((t) => {
-                const taggedProduct = t.productSlug ? getProductBySlug(t.productSlug) : undefined;
-                return (
-                  <div key={t.id} className="rounded-lg border border-beige p-4">
-                    <div className="text-gold text-sm mb-2">{"★".repeat(t.rating)}{"☆".repeat(5 - t.rating)}</div>
-                    <p className="text-sm text-ink/80 leading-relaxed mb-3">{t.text}</p>
-                    <div className="flex items-center gap-2">
-                      {t.avatar ? (
-                        <div className="relative h-8 w-8 rounded-full overflow-hidden shrink-0">
-                          <Image src={t.avatar} alt={t.name} fill sizes="32px" className="object-cover" />
-                        </div>
-                      ) : (
-                        <div className="h-8 w-8 rounded-full bg-brand/10 flex items-center justify-center text-brand text-sm font-medium shrink-0">
-                          {t.name.charAt(0)}
-                        </div>
-                      )}
-                      <span className="text-sm font-medium text-brand">{t.name}</span>
-                      <span className="text-xs text-gold ml-auto">✓ verified</span>
-                    </div>
-                    {taggedProduct && (
-                      <Link
-                        href={`/jewellery/${categoryToSlug(taggedProduct.category)}/${taggedProduct.slug}`}
-                        className="mt-3 pt-3 border-t border-beige flex items-center gap-2 hover:opacity-80 transition-opacity"
-                      >
-                        <div className="relative h-10 w-10 rounded overflow-hidden shrink-0 bg-beige">
-                          <Image src={taggedProduct.image} alt={taggedProduct.name} fill sizes="40px" className="object-cover" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-xs text-ink/70 truncate">{taggedProduct.name}</p>
-                          <p className="text-xs font-semibold text-brand">{taggedProduct.price}</p>
-                        </div>
-                      </Link>
-                    )}
-                  </div>
-                );
-              })}
-              {liveTestimonials.length === 0 && (
-                <p className="col-span-full text-center text-sm text-ink/40 py-8">No approved testimonials yet.</p>
-              )}
-            </div>
+            <CustomerStoryGrid testimonials={liveTestimonials} revealStagger />
           </section>
         )}
 
         {/* Our Promise — trust badges */}
         {isOn("trust-badges") && (
-          <section data-reveal-stagger className="grid grid-cols-2 sm:grid-cols-4 gap-6 rounded-xl bg-brand py-10 px-4">
-            {trustBadges.filter((b) => b.enabled).map((b) => (
-              <div key={b.id} className="flex flex-col items-center text-center gap-2">
-                <span className="grid h-12 w-12 place-items-center rounded-full border border-gold/40 text-xl text-gold-light">{b.icon}</span>
-                <span className="text-sm font-medium text-gold-light">{b.label}</span>
-                <span className="text-xs text-gold-light/50">{b.sub}</span>
-              </div>
-            ))}
-          </section>
+          <TrustBadgeGrid badges={trustBadges} revealStagger />
         )}
       </div>
     </div>
