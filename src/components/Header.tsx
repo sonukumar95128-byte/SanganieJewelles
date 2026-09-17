@@ -243,18 +243,18 @@ export function Header() {
             aria-label="Menu"
             className="fixed inset-y-0 left-0 z-[70] flex w-[82%] max-w-xs flex-col bg-white shadow-xl"
           >
-            <div className="flex items-center justify-between border-b border-beige px-4 py-3">
+            <div className="flex items-center justify-between border-b border-gold-light/30 bg-brand px-4 py-3">
               <Image
                 src="/brand/sanganie-jewells-logo-gold.png"
                 alt="Sanganie Jewells"
                 width={160}
                 height={160}
-                className="h-10 w-10 object-contain"
+                className="h-14 w-14 object-contain"
               />
               <button
                 onClick={() => setMenuOpen(false)}
                 aria-label="Close menu"
-                className="grid h-10 w-10 place-items-center rounded-full text-ink/70 hover:bg-beige"
+                className="grid h-10 w-10 place-items-center rounded-full text-gold-light hover:bg-white/10"
               >
                 <CloseIcon />
               </button>
