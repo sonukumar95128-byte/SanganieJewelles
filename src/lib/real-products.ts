@@ -1,4 +1,4 @@
-﻿// Auto-generated — images served from lakshiraah.com/products/
+﻿// Auto-generated — images served from Cloudinary (res.cloudinary.com)
 import type { Category } from "@/lib/dummy-images";
 
 export type RealProduct = {
