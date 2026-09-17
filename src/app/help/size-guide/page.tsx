@@ -1,6 +1,12 @@
+import { openGraphFor } from "@/lib/site";
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Size Guide — Sanganie Jewells" };
+export const metadata = {
+  title: "Size Guide — Sanganie Jewells",
+  description: "Find your ring, bangle and bracelet size with the Sanganie Jewells size guide before you order.",
+  alternates: { canonical: "/help/size-guide" },
+  openGraph: openGraphFor("/help/size-guide", { title: "Size Guide — Sanganie Jewells", description: "Find your ring, bangle and bracelet size with the Sanganie Jewells size guide before you order." }),
+};
 
 export default function SizeGuidePage() {
   return (

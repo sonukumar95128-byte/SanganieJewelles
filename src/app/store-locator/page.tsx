@@ -1,4 +1,10 @@
-export const metadata = { title: "Store Locator — Sanganie Jewells" };
+import { openGraphFor } from "@/lib/site";
+export const metadata = {
+  title: "Store Locator — Sanganie Jewells",
+  description: "Visit a Sanganie Jewells store to see our certified diamond jewellery in person.",
+  alternates: { canonical: "/store-locator" },
+  openGraph: openGraphFor("/store-locator", { title: "Store Locator — Sanganie Jewells", description: "Visit a Sanganie Jewells store to see our certified diamond jewellery in person." }),
+};
 
 export default function StoreLocatorPage() {
   return (

@@ -1,6 +1,12 @@
+import { openGraphFor } from "@/lib/site";
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Terms & Conditions — Sanganie Jewells" };
+export const metadata = {
+  title: "Terms & Conditions — Sanganie Jewells",
+  description: "The terms and conditions for buying jewellery from Sanganie Jewells online.",
+  alternates: { canonical: "/terms" },
+  openGraph: openGraphFor("/terms", { title: "Terms & Conditions — Sanganie Jewells", description: "The terms and conditions for buying jewellery from Sanganie Jewells online." }),
+};
 
 export default function TermsPage() {
   return (

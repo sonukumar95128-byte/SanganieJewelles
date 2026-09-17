@@ -1,5 +1,19 @@
+import type { Metadata } from "next";
 import { CategoryListing } from "@/components/CategoryListing";
+import { openGraphFor } from "@/lib/site";
 import { dummyProducts, priceToNumber, promoImage, slugToCategory } from "@/lib/dummy-images";
+
+const shopTitle = "Shop Diamond Jewellery Online — Rings, Earrings, Necklaces & More | Sanganie Jewells";
+const shopDescription =
+  "Browse 390 pieces of certified diamond jewellery in 9KT, 14KT and 18KT rose and yellow gold: rings, earrings, necklaces, bracelets, pendants and nose pins, from ₹6,500.";
+
+// Filtered views (?category=, ?minPrice=) all point back to the one canonical shop page.
+export const metadata: Metadata = {
+  title: shopTitle,
+  description: shopDescription,
+  alternates: { canonical: "/jewellery" },
+  openGraph: openGraphFor("/jewellery", { title: shopTitle, description: shopDescription }),
+};
 
 const SHOP_FALLBACK = promoImage;
 

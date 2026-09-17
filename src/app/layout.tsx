@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
+import { OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import { SiteChrome } from "@/components/SiteChrome";
 import { CartProvider } from "@/lib/cart-store";
 import { AdminProvider } from "@/lib/admin-store";
@@ -20,12 +21,40 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Sanganie Jewells — Luxurious Concepts",
+    default: "Sanganie Jewells — Certified Diamond Jewellery in Gold",
     template: "%s",
   },
-  description: "Fine jewellery — rings, earrings, necklaces, bracelets, and nose pins.",
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    "diamond jewellery",
+    "gold jewellery online",
+    "diamond rings",
+    "diamond earrings",
+    "diamond necklace",
+    "mangalsutra",
+    "diamond bracelet",
+    "diamond pendant",
+    "diamond nose pin",
+    "IGI certified diamonds",
+    "rose gold jewellery",
+    "Sanganie Jewells",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "en_IN",
+    images: [OG_IMAGE],
+  },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE.url] },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  formatDetection: { telephone: false },
 };
 
 export default function RootLayout({

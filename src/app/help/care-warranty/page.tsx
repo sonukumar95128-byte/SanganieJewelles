@@ -1,6 +1,12 @@
+import { openGraphFor } from "@/lib/site";
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Care & Warranty — Sanganie Jewells" };
+export const metadata = {
+  title: "Care & Warranty — Sanganie Jewells",
+  description: "How to care for your diamond and gold jewellery, and what the Sanganie Jewells warranty covers.",
+  alternates: { canonical: "/help/care-warranty" },
+  openGraph: openGraphFor("/help/care-warranty", { title: "Care & Warranty — Sanganie Jewells", description: "How to care for your diamond and gold jewellery, and what the Sanganie Jewells warranty covers." }),
+};
 
 export default function CareWarrantyPage() {
   return (

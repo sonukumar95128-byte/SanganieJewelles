@@ -1,6 +1,12 @@
+import { openGraphFor } from "@/lib/site";
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Shipping & Returns — Sanganie Jewells" };
+export const metadata = {
+  title: "Shipping & Returns — Sanganie Jewells",
+  description: "Free insured shipping over ₹999 and easy 15-day returns on Sanganie Jewells orders. Delivery times and how returns work.",
+  alternates: { canonical: "/help/shipping-returns" },
+  openGraph: openGraphFor("/help/shipping-returns", { title: "Shipping & Returns — Sanganie Jewells", description: "Free insured shipping over ₹999 and easy 15-day returns on Sanganie Jewells orders. Delivery times and how returns work." }),
+};
 
 export default function ShippingReturnsPage() {
   return (

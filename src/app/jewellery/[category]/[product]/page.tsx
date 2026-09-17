@@ -18,12 +18,26 @@ import {
   getProductBySlug,
   hoverImageFor,
   slugToCategory,
+  priceToNumber,
   styleTags,
+  type DummyProduct,
 } from "@/lib/dummy-images";
+import { JsonLd } from "@/components/JsonLd";
+import { absoluteUrl, goldTone, openGraphFor, SITE_NAME } from "@/lib/site";
 
 // Render dynamically on demand — avoids pre-building all 390 product pages during
 // deployment, which uses too much memory on Hostinger's server.
 export const dynamic = "force-dynamic";
+
+function productDescription(product: DummyProduct): string {
+  const a = product.attributes ?? {};
+  const gold = [a["Gold Karat"], a["Gold Colour"] && goldTone(a["Gold Colour"]), "gold"].filter(Boolean).join(" ");
+  const diamonds = [a["Lab Certificate"] && `${a["Lab Certificate"]} certified`, "diamonds", a["Diamond Clarity"] && `(${a["Diamond Clarity"]})`]
+    .filter(Boolean)
+    .join(" ");
+  const weight = a["Gold Weight"] ? `, ${a["Gold Weight"]} gold` : "";
+  return `${product.name}${product.sku ? ` ${product.sku}` : ""} in ${gold} with ${diamonds}${weight}. Price ${product.price}. Free shipping over ₹999 and easy 15-day returns at Sanganie Jewells.`;
+}
 
 export async function generateMetadata({
   params,
@@ -35,17 +49,21 @@ export async function generateMetadata({
 
   if (!product) return { title: "Product not found — Sanganie Jewells" };
 
-  const title = `${product.name} | Sanganie Jewells`;
-  const description = product.description.slice(0, 155);
+  // Many products share a name, so the SKU and karat keep every title unique.
+  const karat = product.attributes?.["Gold Karat"];
+  const title = [product.sku ? `${product.name} ${product.sku}` : product.name, karat && `${karat} Gold`, "Sanganie Jewells"]
+    .filter(Boolean)
+    .join(" | ");
+  const description = productDescription(product);
+  const path = `/jewellery/${categoryToSlug(product.category)}/${product.slug}`;
+  const images = [product.image, ...product.gallery.filter((g) => g !== product.image)].slice(0, 4);
 
   return {
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      images: [{ url: product.image }],
-    },
+    alternates: { canonical: path },
+    openGraph: openGraphFor(path, { title, description, images: images.map((url) => ({ url, alt: product.name })) }),
+    twitter: { card: "summary_large_image", title, description, images },
   };
 }
 
@@ -65,8 +83,47 @@ export default async function ProductDetailPage({
 
   const related = dummyProducts.filter((p) => p.category === category && p.slug !== product.slug).slice(0, 4);
 
+  const url = absoluteUrl(`/jewellery/${categorySlug}/${product.slug}`);
+  const attrs = product.attributes ?? {};
+  // Ratings are left out on purpose: the review counts are placeholder data, not real reviews.
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.sku ? `${product.name} ${product.sku}` : product.name,
+      sku: product.sku,
+      mpn: product.sku,
+      image: gallery.map((src) => absoluteUrl(src)),
+      description: productDescription(product),
+      category: `Jewellery > ${category}`,
+      brand: { "@type": "Brand", name: SITE_NAME },
+      material: [attrs["Gold Karat"], attrs["Gold Colour"] ?? "Gold"].filter(Boolean).join(" "),
+      color: attrs["Gold Colour"],
+      url,
+      offers: {
+        "@type": "Offer",
+        url,
+        priceCurrency: "INR",
+        price: priceToNumber(product.price),
+        availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        itemCondition: "https://schema.org/NewCondition",
+        seller: { "@type": "Organization", name: SITE_NAME },
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+        { "@type": "ListItem", position: 2, name: category, item: absoluteUrl(`/jewellery/${categorySlug}`) },
+        { "@type": "ListItem", position: 3, name: product.name, item: url },
+      ],
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
+      <JsonLd data={structuredData} />
       <nav className="text-sm text-ink/50 mb-6">
         <Link href="/" className="hover:text-gold">
           Home

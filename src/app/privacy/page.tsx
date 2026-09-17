@@ -1,6 +1,12 @@
+import { openGraphFor } from "@/lib/site";
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Privacy Policy — Sanganie Jewells" };
+export const metadata = {
+  title: "Privacy Policy — Sanganie Jewells",
+  description: "How Sanganie Jewells collects, uses and protects your personal information when you shop with us.",
+  alternates: { canonical: "/privacy" },
+  openGraph: openGraphFor("/privacy", { title: "Privacy Policy — Sanganie Jewells", description: "How Sanganie Jewells collects, uses and protects your personal information when you shop with us." }),
+};
 
 export default function PrivacyPage() {
   return (

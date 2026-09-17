@@ -1,6 +1,11 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import Image from "next/image";
+import { JsonLd } from "@/components/JsonLd";
+import { absoluteUrl, openGraphFor, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+
+export const metadata: Metadata = { alternates: { canonical: "/" }, openGraph: openGraphFor("/") };
 import Link from "next/link";
 import { getPrisma } from "@/lib/prisma";
 import { CircleRow } from "@/components/CircleRow";
@@ -175,6 +180,34 @@ export default async function Home() {
 
   return (
     <div className="space-y-16 pb-16">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "@id": `${SITE_URL}/#organization`,
+            name: SITE_NAME,
+            url: absoluteUrl("/"),
+            logo: absoluteUrl("/brand/sanganie-jewells-logo-512.png"),
+            description: SITE_DESCRIPTION,
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": `${SITE_URL}/#website`,
+            name: SITE_NAME,
+            url: absoluteUrl("/"),
+            publisher: { "@id": `${SITE_URL}/#organization` },
+            inLanguage: "en-IN",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: { "@type": "EntryPoint", urlTemplate: absoluteUrl("/search?q={search_term_string}") },
+              "query-input": "required name=search_term_string",
+            },
+          },
+        ]}
+      />
+      <h1 className="sr-only">Sanganie Jewells — certified diamond jewellery in rose and yellow gold</h1>
       <ScrollReveal />
       {/* Hero — full bleed slider. The category band sits flush beneath it, with no white gap. */}
       {isOn("hero") && (

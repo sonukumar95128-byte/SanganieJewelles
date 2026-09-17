@@ -1,6 +1,12 @@
+import { openGraphFor } from "@/lib/site";
 import Image from "next/image";
 
-export const metadata = { title: "About Us — Sanganie Jewells" };
+export const metadata = {
+  title: "About Us — Sanganie Jewells",
+  description: "The story behind Sanganie Jewells: certified diamonds set in hallmarked gold, crafted as luxurious concepts for everyday and bridal wear.",
+  alternates: { canonical: "/about" },
+  openGraph: openGraphFor("/about", { title: "About Us — Sanganie Jewells", description: "The story behind Sanganie Jewells: certified diamonds set in hallmarked gold, crafted as luxurious concepts for everyday and bridal wear." }),
+};
 
 export default function AboutPage() {
   return (
