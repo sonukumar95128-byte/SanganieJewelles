@@ -121,8 +121,13 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-gold-light/15 px-4 sm:px-6 py-4 text-center text-xs text-gold-light/50">
-        © {new Date().getFullYear()} Sanganie Jewells. All rights reserved.
+      <div className="border-t border-gold-light/15 px-4 sm:px-6 py-4 text-xs text-gold-light/50">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-1.5 text-center sm:flex-row sm:justify-between">
+          <p>© {new Date().getFullYear()} Sanganie Jewells. All rights reserved.</p>
+          <p>
+            Developed by <span className="font-medium text-gold-light/80">Diamond Guru Professional Service</span>
+          </p>
+        </div>
       </div>
     </footer>
   );
