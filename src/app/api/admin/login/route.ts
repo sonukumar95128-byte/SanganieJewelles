@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
   const rawNext = (formData.get("next") as string) || "/admin";
   const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/admin";
 
-  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? request.nextUrl.origin;
+  // Redirect back to the host the form was posted from (localhost, preview or the live domain).
+  const origin = request.nextUrl.origin;
 
   if (password !== process.env.ADMIN_PASSWORD) {
     const url = new URL("/admin/login", origin);
